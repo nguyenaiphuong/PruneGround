@@ -59,7 +59,11 @@
 
   <script>document.documentElement.classList.add('has-js')</script>
   <link rel="stylesheet" href="styles.css?v=20261022">
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/PLYLoader.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" defer></script>
   <script src="script.js?v=20261022" defer></script>
+  <script src="3d-explorer.js?v=20261022" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -77,6 +81,7 @@
       <div class="nav-links" id="nav-links">
         <a href="#overview">Overview</a>
         <a href="#method">Method</a>
+        <a href="#explorer">3D Explorer</a>
         <a href="#results">Results</a>
         <a href="#analysis">Analysis</a>
         <a href="#citation">Citation</a>
@@ -247,10 +252,85 @@
       </div>
     </section>
 
+    <section class="section explorer-section" id="explorer">
+      <div class="shell">
+        <div class="section-heading reveal">
+          <p class="section-kicker">03 · Interactive Explorer</p>
+          <h2>See spatial pruning<br><span>in three dimensions.</span></h2>
+          <p>Orbit the original ScanNet mesh, inspect the language-guided retained region, then switch to the pruned scene passed to the downstream grounder.</p>
+        </div>
+
+        <div class="explorer-card reveal">
+          <div class="explorer-tabs" role="tablist" aria-label="PruneGround example scenes">
+            <button type="button" role="tab" aria-selected="true" data-pg-scene="scene0011_00"><span>01</span> Chair near TV</button>
+            <button type="button" role="tab" aria-selected="false" data-pg-scene="scene0025_00"><span>02</span> Sofa by door</button>
+            <button type="button" role="tab" aria-selected="false" data-pg-scene="scene0050_01"><span>03</span> Sofa chair</button>
+          </div>
+
+          <div class="explorer-stage">
+            <div class="viewer-column">
+              <div class="viewer-toolbar" aria-label="3D viewer controls">
+                <div class="mode-switch" role="group" aria-label="Mesh mode">
+                  <button type="button" class="active" data-pg-mode="full">Full scene</button>
+                  <button type="button" data-pg-mode="pruned">Pruned scene</button>
+                </div>
+                <div class="viewer-actions">
+                  <button type="button" id="pg-region-toggle" aria-pressed="true">Region on</button>
+                  <button type="button" id="pg-reset-view">Reset view</button>
+                </div>
+              </div>
+
+              <div class="pg-canvas-wrap" id="pg-canvas-wrap">
+                <div class="pg-loading" id="pg-loading" role="status">
+                  <span class="pg-spinner" aria-hidden="true"></span>
+                  <b>Loading 3D scene…</b>
+                  <small id="pg-load-progress">Preparing mesh</small>
+                </div>
+                <div class="pg-webgl-error" id="pg-webgl-error" hidden>
+                  This interactive view needs WebGL. Try a current desktop or mobile browser.
+                </div>
+                <div class="viewer-legend">
+                  <span><i class="legend-region"></i> LGSP retained region</span>
+                  <span><i class="legend-mesh"></i> Vertex-coloured ScanNet mesh</span>
+                </div>
+                <div class="viewer-hint">Drag to orbit · scroll/pinch to zoom</div>
+              </div>
+
+              <div class="mesh-stats" aria-live="polite">
+                <div><span>Scene</span><strong id="pg-scene-id">scene0011_00</strong></div>
+                <div><span>Full triangles</span><strong id="pg-full-faces">—</strong></div>
+                <div><span>Pruned triangles</span><strong id="pg-pruned-faces">—</strong></div>
+                <div><span>Geometry retained</span><strong id="pg-retention">—</strong></div>
+              </div>
+            </div>
+
+            <aside class="explorer-info" aria-live="polite">
+              <div class="info-block">
+                <p class="mini-kicker">Original description</p>
+                <blockquote id="pg-query">“This is a single chair nearest the TV”</blockquote>
+              </div>
+              <div class="info-divider" aria-hidden="true"><span>LGSP</span><i></i><span>MCDR</span></div>
+              <div class="info-block reformulation-block">
+                <p class="mini-kicker">Reformulated description</p>
+                <h3 id="pg-target">Target: chair</h3>
+                <ul id="pg-reformulation">
+                  <li>The chair is brown and worn out.</li>
+                  <li>The chair is behind the TV.</li>
+                  <li>The chair is next to the TV.</li>
+                  <li>The chair is on the floor.</li>
+                </ul>
+              </div>
+              <p class="explorer-source">Meshes and reformulations are from the <a href="https://github.com/leduckhai/PruneGround/tree/main/examples" target="_blank" rel="noopener">official released examples <span aria-hidden="true">↗</span></a>. They illustrate the pipeline and are not the exact unpublished scenes from Figures 1 and 3.</p>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section results-section" id="results">
       <div class="shell">
         <div class="section-heading reveal">
-          <p class="section-kicker">03 · Results</p>
+          <p class="section-kicker">04 · Results</p>
           <h2>State of the art across<br><span>three 3DVG benchmarks.</span></h2>
           <p>PruneGround is evaluated on ScanRefer, Nr3D, and Sr3D. The paper reports best results in all three ScanRefer settings and 9 of 10 Nr3D/Sr3D settings.</p>
         </div>
@@ -328,7 +408,7 @@
     <section class="section analysis-section" id="analysis">
       <div class="shell">
         <div class="section-heading reveal">
-          <p class="section-kicker">04 · Analysis</p>
+          <p class="section-kicker">05 · Analysis</p>
           <h2>Where the gains<br><span>come from.</span></h2>
           <p>Each stage contributes measurable value: pruning narrows the candidate set, and visually conditioned reformulation adds precise target–anchor relations.</p>
         </div>
@@ -396,7 +476,7 @@
     <section class="section citation-section" id="citation">
       <div class="shell citation-shell">
         <div class="citation-copy reveal">
-          <p class="section-kicker">05 · Citation</p>
+          <p class="section-kicker">06 · Citation</p>
           <h2>Build on<br><span>PruneGround.</span></h2>
           <p>If this work helps your research, please cite the arXiv paper and visit the official repository for code and models.</p>
           <div class="citation-actions">
