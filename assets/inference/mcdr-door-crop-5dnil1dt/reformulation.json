@@ -1,0 +1,32 @@
+{
+  "target": "the chair",
+  "anchors": [
+    "the doorway",
+    "the table",
+    "the TV"
+  ],
+  "anchors_visual": [
+    "the floor",
+    "the wall"
+  ],
+  "target_properties": [
+    "the chair is wooden and brown"
+  ],
+  "augmented_target_properties": [
+    "the chair has a cushioned seat"
+  ],
+  "utterances": [
+    "the chair is left of the doorway",
+    "the chair is in front of the table",
+    "the chair is right of the TV",
+    "the chair is on the floor",
+    "the chair is against the wall"
+  ],
+  "augmented_utterances": [
+    "the chair is on the wooden floor",
+    "the chair is against the white wall"
+  ],
+  "raw": "- target name: the chair\n- anchors name: the doorway, the table, the TV\n- anchors not in description but visible: the floor, the wall\n- reformulated_description:\n  + target properties: the chair is wooden and brown\n  + augmented target properties: the chair has a cushioned seat\n  + single target single anchor utterances:\n    - the chair is left of the doorway\n    - the chair is in front of the table\n    - the chair is right of the TV\n    - the chair is on the floor\n    - the chair is against the wall\n- augmented single target - single anchor utterances:\n  - the chair is on the wooden floor\n  - the chair is against the white wall",
+  "original_description": "The chair nearest the doorway, at the opposite end of the table from the TV.",
+  "reformulated_description": "Target: the chair\n- the chair is wooden and brown\n- the chair has a cushioned seat\n- the chair is left of the doorway\n- the chair is in front of the table\n- the chair is right of the TV\n- the chair is on the floor\n- the chair is against the wall\n- the chair is on the wooden floor\n- the chair is against the white wall"
+}

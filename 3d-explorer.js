@@ -152,7 +152,8 @@
     if (!cache.has(key)) {
       const root = 'assets/3d/' + key;
       cache.set(key, Promise.allSettled([
-        sceneInputs(id), loadPly(root + (variant ? '/display-crop.ply' : '/pruned.ply'), null, id), readJSON(root + '/reformulation.json')
+        sceneInputs(id), loadPly(root + (variant ? '/display-crop.ply' : '/pruned.ply'), null, id),
+        readJSON(root + '/reformulation.json' + (variant ? '?v=mcdr-door-crop-5dnil1dt' : ''))
       ]).then((results) => {
         const failure = results.find((result) => result.status === 'rejected');
         if (failure) {

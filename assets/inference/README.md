@@ -7,7 +7,31 @@ on 22 October 2026 using their unmodified public LGSP and MCDR scripts.
 **Display update:** the website now uses a separate compact, reference-based crop
 for chair B. See [display-crop.json](../3d/scene0011_00/door/display-crop.json).
 That crop is manually specified, not an inference result. All original results
-below are unchanged, including the MCDR text still shown in the viewer.
+below are unchanged. The active MCDR text now comes from the crop-specific rerun
+documented next.
+
+## MCDR rerun on the displayed crop
+
+[Run manifest](mcdr-door-crop-5dnil1dt/manifest.json) ·
+[Raw log](mcdr-door-crop-5dnil1dt/mcdr.log) ·
+[New JSON](mcdr-door-crop-5dnil1dt/reformulation.json) ·
+[Previous JSON](mcdr-door-crop-5dnil1dt/previous-reformulation.json) ·
+[X view](mcdr-door-crop-5dnil1dt/local_views/local_x.png) ·
+[Y view](mcdr-door-crop-5dnil1dt/local_views/local_y.png).
+
+- Only MCDR was rerun, using the unmodified upstream `render_local_views` and `MCDR.py`.
+- Input: the website's exact 18,650-triangle `display-crop.ply`, rendered into two fresh 512×512 RGB images; the original description is unchanged.
+- Same model as the previous 7B run: `Qwen/Qwen2.5-VL-7B-Instruct`, snapshot `cc594898137f460bfe9f0759e9844b3ce807cfb5`; greedy decoding, 262,144 maximum pixels per local view.
+- GPU: L40S; all input image and output JSON hashes were verified after download.
+- Unlike the original LGSP runs below, this MCDR run is conditioned on a reference-based presentation crop. It is not an end-to-end grounding evaluation.
+
+The new text mentions a cushioned seat, floor and wall. It still makes unsupported
+claims: neither the TV nor doorway is visible in the crop, and a white wall is
+not established by these images. It also outputs seven relation statements despite
+the upstream prompt requesting at most five. Output is retained verbatim, not
+manually corrected; more statements do not establish better accuracy.
+
+## Original LGSP + MCDR runs
 
 - Code: [leduckhai/PruneGround at 680945d](https://github.com/leduckhai/PruneGround/tree/680945de5c3a474f942b3e5645dd628ba2178552).
 - Scene: `scene0011_00`; original full mesh, top view and, for the full prompt, four RGB/depth side-view pairs.

@@ -1,0 +1,61 @@
+{
+  "status": "completed",
+  "started_at": "2026-10-22T04:44:49.275564+00:00",
+  "stage": "MCDR only",
+  "upstream_repository": "https://github.com/leduckhai/PruneGround",
+  "upstream_commit": "680945de5c3a474f942b3e5645dd628ba2178552",
+  "upstream_dirty": false,
+  "scene_id": "scene0011_00",
+  "description": "The chair nearest the doorway, at the opposite end of the table from the TV.",
+  "model": "Qwen/Qwen2.5-VL-7B-Instruct",
+  "model_revision": "cc594898137f460bfe9f0759e9844b3ce807cfb5",
+  "gpu": "NVIDIA L40S",
+  "torch": "2.8.0+cu128",
+  "cuda": "12.8",
+  "input_crop_kind": "reference_based_presentation_crop",
+  "input_crop_model_prediction": false,
+  "input_crop_sha256": "4dd4319214c261a31182565f59efa00086aece0d7b09c3355ba5924027d86b86",
+  "full_mesh_sha256": "2941664625d52110aefbfb2b5fd3c869c3f51b999a036a27ba3e0033e3bf21f5",
+  "previous_reformulation_sha256": "c0c8aababf20a86279ed29d8ea71dbd400ceae0122719430f5ca6c7df5a34c8d",
+  "mcdr_code_sha256": "8dc073e047d4650cc3b2fcc5d6d9234364dbf7df5563f6582c537da64c0990c4",
+  "renderer_code_sha256": "d59776a54bb0212d5ac5553cf81021084dc4f97468fdea7076511719f2db674b",
+  "decoding": "upstream greedy do_sample=False",
+  "sideview_max_pixels": 262144,
+  "predicted_target_box": null,
+  "note": "MCDR rerun on two freshly rendered local views of the manually specified website crop. LGSP is not rerun. No manual text corrections or added visual context.",
+  "views": {
+    "local_x.png": {
+      "sha256": "928681354976ae0525041afbc9df4fdf7a62f98b11bfc7e5b7502d493925b26f",
+      "size": [
+        512,
+        512
+      ],
+      "foreground_pixels": 23949
+    },
+    "local_y.png": {
+      "sha256": "50e95f905746349b30cb8a70f71185d8f9bcda176734210d1127a18019d2b9eb",
+      "size": [
+        512,
+        512
+      ],
+      "foreground_pixels": 23702
+    }
+  },
+  "resolved_model_revision": "cc594898137f460bfe9f0759e9844b3ce807cfb5",
+  "command": [
+    "/workspace/pruneground-task-20261022/venv-cu128/bin/python",
+    "/workspace/pruneground-task-20261022/PruneGround/MCDR.py",
+    "--scene_id",
+    "scene0011_00",
+    "--output_dir",
+    "/workspace/pruneground-task-20261022/results/mcdr-door-crop-5dnil1dt/output",
+    "--description",
+    "The chair nearest the doorway, at the opposite end of the table from the TV.",
+    "--model_name",
+    "/workspace/pruneground-task-20261022/cache/huggingface/hub/models--Qwen--Qwen2.5-VL-7B-Instruct/snapshots/cc594898137f460bfe9f0759e9844b3ce807cfb5",
+    "--sideview_max_pixels",
+    "262144"
+  ],
+  "reformulation_sha256": "672aaa412e8c3106b6c45b521de584974b0f5e170c5645cb5af7cc6aecb5b262",
+  "finished_at": "2026-10-22T04:45:54.132179+00:00"
+}

@@ -81,7 +81,8 @@ const metadata = {
   full_mesh_sha256: hash(fullBytes), reference_sha256: hash(referenceBytes),
   display_mesh_sha256: hash(bytes),
   original_inference_mesh: 'pruned.ply',
-  reformulation_source: 'Unchanged MCDR output from the original, wider 7B/full inference region; not regenerated from this presentation crop.'
+  reformulation_source: 'Unedited MCDR output rerun on two fresh local views of this presentation crop using Qwen2.5-VL-7B-Instruct.',
+  reformulation_manifest: '../../../inference/mcdr-door-crop-5dnil1dt/manifest.json'
 };
 const plyPath = path.join(sceneDir, 'door/display-crop.ply');
 const metadataPath = path.join(sceneDir, 'door/display-crop.json');

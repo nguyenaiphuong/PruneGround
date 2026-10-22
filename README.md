@@ -33,9 +33,10 @@ definition; only populate it with a real, aligned downstream result.
 
 Full PLYs, TV-query and other-room outputs originate from
 [`leduckhai/PruneGround`](https://github.com/leduckhai/PruneGround/tree/main/examples).
-The original doorway `pruned.ply` and `reformulation.json` in
-`assets/3d/scene0011_00/door/` were generated on an L40S using the unmodified
-public code, Qwen2.5-VL-7B and its full prompt. The original mesh retains
+The original doorway `assets/3d/scene0011_00/door/pruned.ply` was generated
+on an L40S using the unmodified public code, Qwen2.5-VL-7B and its full prompt.
+Its original reformulation is archived in
+`assets/inference/chair-door-57_q9bo2/reformulation.json`. The original mesh retains
 all reference vertices of chair B **and chair A** and 35.4% of full-scene
 triangles. This is broad pruning, not completed grounding. Two short-prompt
 configurations failed to retain chair B completely; all attempts, raw outputs
@@ -48,8 +49,11 @@ The viewer now loads **`door/display-crop.ply`**, a manually specified 1 m × 1 
 XY crop centered on the reference bounds of chair B. It retains all 3,356
 reference vertices of B, none of A, and 18,650 triangles. It is a presentation
 crop, not an improved inference result. The original model mesh and logs are
-unchanged. MCDR text still comes from the original wider inference region; it
-was not regenerated from the tighter crop. The collapsed data-sources panel
+unchanged. MCDR was subsequently rerun on two fresh 512×512 local views of this
+exact presentation crop, using the same Qwen2.5-VL-7B model snapshot and unchanged
+upstream prompt. The active `door/reformulation.json` now contains that new raw
+output. See `assets/inference/mcdr-door-crop-5dnil1dt/` for the two images,
+manifest, old/new JSON and log. No LGSP rerun was performed. The collapsed data-sources panel
 records this distinction without adding a label over the scene.
 
 Regenerate or verify the presentation artifact with:

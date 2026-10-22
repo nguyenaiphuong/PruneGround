@@ -14,6 +14,18 @@ assert.equal(crop.reference_coverage[4].fraction, 0);
 const cropFaceCount = new Intl.NumberFormat('en-US').format(crop.triangles);
 const frame = (page) => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 const hash = (bytes) => crypto.createHash('sha256').update(bytes).digest('hex');
+const manifestPath = path.resolve(root, 'assets/3d/scene0011_00/door', crop.reformulation_manifest);
+const mcdrRun = JSON.parse(fs.readFileSync(manifestPath));
+const runDir = path.dirname(manifestPath);
+const activeJSON = fs.readFileSync(path.join(root, 'assets/3d/scene0011_00/door/reformulation.json'));
+assert.equal(mcdrRun.status, 'completed');
+assert.equal(mcdrRun.input_crop_sha256, crop.display_mesh_sha256);
+assert.equal(hash(activeJSON), mcdrRun.reformulation_sha256);
+assert.equal(hash(fs.readFileSync(path.join(runDir, 'reformulation.json'))), mcdrRun.reformulation_sha256);
+for (const [name, view] of Object.entries(mcdrRun.views)) {
+  assert.equal(hash(fs.readFileSync(path.join(runDir, 'local_views', name))), view.sha256);
+}
+assert.ok(fs.readFileSync(path.join(runDir, 'mcdr.log'), 'utf8').includes(JSON.parse(activeJSON).raw));
 
 (async () => {
   const browser = await chromium.launch({headless: true, args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-sandbox']});
@@ -127,6 +139,7 @@ const hash = (bytes) => crypto.createHash('sha256').update(bytes).digest('hex');
   assert.equal(await page.locator('.chair-door.selected').count(), 1);
   assert.equal(fullRequests.length, 1, 'Both query variants must share the full room download');
   assert.ok(doorRequests.some(url => url.endsWith('/display-crop.ply')));
+  assert.ok(doorRequests.some(url => url.endsWith('/reformulation.json?v=mcdr-door-crop-5dnil1dt')));
   assert.ok(!doorRequests.some(url => url.endsWith('/pruned.ply')), 'The wider original inference is archived, not displayed');
   await page.click('.mesh-details summary');
   assert.equal(await page.locator('.mesh-details').getAttribute('open'), '');
