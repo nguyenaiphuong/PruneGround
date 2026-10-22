@@ -80,6 +80,7 @@
   scene.add(content, annotations);
   const loader = new THREE.PLYLoader();
   const cache = new Map();
+  const inputCache = new Map();
   let active = null;
   let loadToken = 0;
   let labels = [];
@@ -116,30 +117,57 @@
     }, reject));
   }
 
-  function sceneData(id) {
-    if (!cache.has(id)) {
+  function sceneDefinition() {
+    const definition = SCENES[state.scene];
+    return state.scene === 'scene0011_00' && state.query === 'door'
+      ? { ...definition, name: QUERIES.door.name, referenceTarget: 9,
+          query: 'The chair nearest the doorway, at the opposite end of the table from the TV.' }
+      : definition;
+  }
+
+  function sceneInputs(id) {
+    if (!inputCache.has(id)) {
       const root = 'assets/3d/' + id;
       const pending = Promise.allSettled([
         loadPly(root + '/full.ply', SCENES[id].axisAlignment, id),
-        loadPly(root + '/pruned.ply', null, id),
-        readJSON(root + '/reformulation.json'),
         id === 'scene0011_00' ? readJSON(root + '/reference-targets.json') : Promise.resolve(null)
       ]).then((results) => {
         const failure = results.find((result) => result.status === 'rejected');
         if (failure) {
-          results.slice(0, 2).forEach((result) => { if (result.status === 'fulfilled') result.value.dispose(); });
-          cache.delete(id);
+          if (results[0].status === 'fulfilled') results[0].value.dispose();
+          inputCache.delete(id);
           throw failure.reason;
         }
-        const [full, pruned, reformulation, reference] = results.map((result) => result.value);
-        return { full, pruned, reformulation, reference, colors: full.attributes.color.array.slice() };
+        const [full, reference] = results.map((result) => result.value);
+        return { full, reference, colors: full.attributes.color.array.slice() };
       });
-      cache.set(id, pending);
+      inputCache.set(id, pending);
     }
-    return cache.get(id);
+    return inputCache.get(id);
   }
 
-  async function loadScene(id) {
+  function sceneData(id, query) {
+    const variant = id === 'scene0011_00' && query === 'door' ? '/door' : '';
+    const key = id + variant;
+    if (!cache.has(key)) {
+      const root = 'assets/3d/' + key;
+      cache.set(key, Promise.allSettled([
+        sceneInputs(id), loadPly(root + '/pruned.ply', null, id), readJSON(root + '/reformulation.json')
+      ]).then((results) => {
+        const failure = results.find((result) => result.status === 'rejected');
+        if (failure) {
+          if (results[1].status === 'fulfilled') results[1].value.dispose();
+          cache.delete(key);
+          throw failure.reason;
+        }
+        const [inputs, pruned, reformulation] = results.map((result) => result.value);
+        return { ...inputs, pruned, reformulation };
+      }));
+    }
+    return cache.get(key);
+  }
+
+  async function loadScene(id, reframe = true) {
     const token = ++loadToken;
     state.scene = id;
     active = null;
@@ -153,13 +181,13 @@
     wrap.setAttribute('aria-busy', 'true');
     syncUI();
     try {
-      const data = await sceneData(id);
+      const data = await sceneData(id, state.query);
       if (token !== loadToken) return;
       active = data;
       active.fullMesh = new THREE.Mesh(data.full, material);
       active.prunedMesh = new THREE.Mesh(data.pruned, material);
       content.add(active.fullMesh, active.prunedMesh);
-      renderState(true);
+      renderState(reframe);
       $('pg-loading').classList.add('is-hidden');
     } catch (error) {
       if (token !== loadToken) return;
@@ -173,7 +201,8 @@
   function syncUI() {
     const why = state.step === 'why';
     const query = QUERIES[state.query];
-    const definition = SCENES[state.scene];
+    const definition = sceneDefinition();
+    const doorwayRun = state.scene === 'scene0011_00' && state.query === 'door';
     const hasReference = definition.referenceTarget !== null;
     const hasPrediction = Boolean(definition.predictedBox);
     const full = why || state.stage === 'full';
@@ -193,33 +222,36 @@
     $('pg-why-info').hidden = !why;
     $('pg-how-info').hidden = why;
     $('pg-scene-select').value = state.scene;
+    $('pg-scene-select').options[0].textContent = 'Same room · ' + query.name;
     $('pg-room-label').textContent = 'Room · ' + state.scene;
     $('pg-story-title').textContent = why ? 'Same room. Different descriptions.' : 'From full scene to target grounding.';
     $('pg-story-subtitle').textContent = why
       ? 'Several chairs look alike. Choose a description to see which one its spatial relationship identifies.'
-      : 'Follow the released meshes and language outputs, one stage at a time.';
+      : 'Follow the saved inference outputs for this description, one stage at a time.';
     $('pg-choice-title').textContent = query.letter + ' · ' + query.name;
     $('pg-choice-explanation').textContent = state.query === 'tv'
       ? 'The TV anchors this description to one end of the table. Switch to the doorway description and the target moves to the opposite end.'
       : 'The doorway anchors this description to the other end of the table. The room stays the same; the spatial relationship changes which chair you mean.';
     $('pg-continue-note').textContent = state.query === 'tv'
       ? 'Continue with the released “chair nearest the TV” example.'
-      : 'The next step switches to the TV query in this same room, because only that query has released pipeline outputs.';
+      : 'Continue with a new inference run for this exact doorway description. Its retained region is broad and includes other chairs.';
     $('pg-transition-note').textContent = state.scene !== 'scene0011_00'
       ? 'Different room · ' + definition.name + '. This is a separate released example, not an output for either chair description in Step 1.'
-      : state.query === 'door'
-        ? 'Same room, different query · You selected the doorway chair. We now follow the released “chair nearest the TV” example; the doorway query has no released pruning result.'
+      : doorwayRun
+        ? 'Same room, same description · Chair B near the doorway. New Runpod inference: Qwen2.5-VL-7B, full prompt. This is not an author-released example or a live inference request.'
         : 'Same room, same target · Continue with the released “chair nearest the TV” example.';
     $('pg-query').textContent = '“' + (active?.reformulation.original_description || definition.query) + '”';
 
     const descriptions = {
-      full: ['Released input', 'Start with the full room', 'The original description must distinguish its target from the other objects in this full ScanNet mesh.'],
-      pruned: ['LGSP · released mesh', 'Keep the language-relevant region', 'Compare this retained mesh with the full room. The purple outline shows the extent of the released pruned geometry, not a target prediction.'],
-      reformulated: ['MCDR · released text', 'Add local visual context', 'Local views produce target properties and target–anchor statements. The retained 3D region stays in view while you inspect the released text.'],
+      full: ['Original input', 'Start with the full room', 'The original description must distinguish its target from the other objects in this full ScanNet mesh.'],
+      pruned: [doorwayRun ? 'LGSP · new inference' : 'LGSP · released mesh', 'Keep the language-relevant region', doorwayRun
+        ? 'This run retains 35.4% of the room’s triangles and all annotated vertices of chair B. It also keeps chair A and other objects: pruning narrows the search region, but does not finish target grounding. The purple outline is the retained mesh extent.'
+        : 'Compare this retained mesh with the full room. The purple outline shows the extent of the released pruned geometry, not a target prediction.'],
+      reformulated: [doorwayRun ? 'MCDR · new inference' : 'MCDR · released text', 'Add local visual context', 'Local views produce target properties and target–anchor statements. This is the model’s unedited output; its visual details and relations can be wrong.'],
       target: hasPrediction
         ? ['Released prediction', 'The predicted target', 'This box comes from the supplied downstream grounding result.']
         : hasReference
-          ? ['Reference only', 'The target to be grounded', 'The reference chair is inside the retained region. Its box comes from ScanNet instance labels; a downstream model prediction has not been released for this example.']
+          ? ['Reference only', 'The target still needs grounding', 'This box identifies the intended chair using ScanNet labels, not model inference. The public code runs pruning and reformulation; it does not supply a downstream grounding stage.']
           : ['Prediction not released', 'Grounding output is not available yet', 'The released example ends at pruning and reformulation. The viewer keeps the pruned region visible; no predicted object box is drawn.']
     };
     const [badge, title, description] = descriptions[state.stage];
@@ -233,7 +265,7 @@
       : 'No target reference annotation is bundled for this scene either. The purple outline remains the extent of the retained mesh.';
     $('pg-next-stage').hidden = state.stage === 'target';
     $('pg-next-stage').textContent = ({ full: 'Show pruned region →', pruned: 'See reformulated description →', reformulated: 'Inspect target availability →', target: '' })[state.stage];
-    $('pg-view-label').textContent = why ? 'Full room · reference highlights' : full ? 'Full room · original mesh' : state.stage === 'target' && hasReference ? 'Pruned region · reference target' : 'Pruned region · released mesh';
+    $('pg-view-label').textContent = why ? 'Full room · reference highlights' : full ? 'Full room · original mesh' : state.stage === 'target' && hasReference ? 'Pruned region · reference target' : 'Pruned region · ' + (doorwayRun ? 'new inference' : 'released mesh');
     $('pg-top-view').setAttribute('aria-pressed', String(state.top));
     $('pg-top-view').textContent = state.top ? 'Perspective view' : 'Top view';
     $('pg-scene-id').textContent = state.scene;
@@ -246,7 +278,7 @@
     updateLegend(why ? [['chair-a', 'A · chair near TV'], ['chair-b', 'B · chair near doorway']]
       : full ? [['mesh', 'Full ScanNet scene']]
       : state.stage === 'target' && hasPrediction ? [['prediction', 'Predicted target box']]
-      : state.stage === 'target' && hasReference ? [['chair-a', 'Reference target · not a prediction']]
+      : state.stage === 'target' && hasReference ? [[doorwayRun ? 'chair-b' : 'chair-a', 'Reference target · not a prediction']]
       : [['region', 'Extent of retained mesh']]);
     if (active) buildReformulations(active.reformulation);
   }
@@ -343,7 +375,7 @@
       addBox(anchor, 0xf4ce83, .65);
       addLabel(anchor, query.anchorName, 'anchor');
     } else if (!full) {
-      const definition = SCENES[state.scene];
+      const definition = sceneDefinition();
       if (state.stage === 'target' && definition.predictedBox) {
         // Only render a prediction if an actual downstream result is supplied.
         const bounds = boundsOf(definition.predictedBox);
@@ -351,8 +383,9 @@
         addLabel(bounds, 'Predicted target', 'chair-door selected');
       } else if (state.stage === 'target' && active.reference && definition.referenceTarget !== null) {
         const bounds = boundsOf(active.reference.objects[definition.referenceTarget]);
-        addBox(bounds, QUERIES.tv.color, 1, true);
-        addLabel(bounds, 'Reference chair · not a prediction', 'chair-tv selected');
+        const query = QUERIES[state.query];
+        addBox(bounds, query.color, 1, true);
+        addLabel(bounds, query.letter + ' · Reference chair · not a prediction', 'chair-' + state.query + ' selected');
       } else {
         addBox(active.pruned.boundingBox, 0xc77bef, .9);
       }
@@ -413,8 +446,10 @@
     });
   });
   queryButtons.forEach((button) => button.addEventListener('click', () => {
+    if (state.query === button.dataset.pgQuery) return;
+    const reframe = !active;
     state.query = button.dataset.pgQuery;
-    renderState();
+    loadScene(state.scene, reframe);
   }));
   stageButtons.forEach((button) => button.addEventListener('click', () => setStage(button.dataset.pgStage)));
   $('pg-continue').addEventListener('click', () => { setStep('how'); $('pg-tab-how').focus({ preventScroll: true }); });

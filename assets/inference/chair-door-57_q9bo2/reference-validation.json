@@ -1,0 +1,33 @@
+{
+  "validated_at": "2026-10-22T02:56:50.222Z",
+  "method": "Match reference instance vertices against the actual pruned mesh within 0.00002 m; annotations were not provided to inference.",
+  "fullTriangles": 451905,
+  "prunedTriangles": 160164,
+  "geometryRetained": 0.35441962359345436,
+  "referenceCoverage": {
+    "4": {
+      "matched": 3781,
+      "total": 3781,
+      "fraction": 1
+    },
+    "9": {
+      "matched": 3356,
+      "total": 3356,
+      "fraction": 1
+    }
+  },
+  "targetDoorChairRetained": true,
+  "differentFromTVQuery": false,
+  "bounds": {
+    "min": [
+      -1.8151026964187622,
+      -2.6241955757141113,
+      -0.03340646252036095
+    ],
+    "max": [
+      0.9273450374603271,
+      3.156242847442627,
+      1.0122017860412598
+    ]
+  }
+}

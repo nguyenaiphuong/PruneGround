@@ -63,7 +63,7 @@
   <script src="assets/vendor/three-r128/PLYLoader.js" defer></script>
   <script src="assets/vendor/three-r128/OrbitControls.js" defer></script>
   <script src="script.js?v=20261022" defer></script>
-  <script src="3d-explorer.js?v=20261022-story1" defer></script>
+  <script src="3d-explorer.js?v=20261022-inference1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -250,7 +250,7 @@
         <div class="section-heading reveal">
           <p class="section-kicker">03 · Interactive Explorer</p>
           <h2>Same room.<br><span>Language changes the target.</span></h2>
-          <p>First, see why spatial relationships matter. Then follow a released PruneGround example through pruning and description reformulation.</p>
+          <p>First, see why spatial relationships matter. Then follow your selected description through real pruning and reformulation outputs in the same room.</p>
         </div>
 
         <div class="explorer-card reveal" id="pg-explorer">
@@ -269,7 +269,7 @@
               <button type="button" data-pg-query="door" aria-pressed="false"><span class="query-letter">B</span><span>The chair nearest the <b>doorway</b><small>The opposite end of the table</small></span></button>
             </div>
             <div class="pipeline-controls" id="pg-pipeline-controls" hidden>
-              <div class="pipeline-context"><p id="pg-transition-note" role="status"></p><label for="pg-scene-select">Released example <select id="pg-scene-select"><option value="scene0011_00">Same room · Chair near TV</option><option value="scene0025_00">Another room · Sofa by door</option><option value="scene0050_01">Another room · Sofa chair</option></select></label></div>
+              <div class="pipeline-context"><p id="pg-transition-note" role="status"></p><label for="pg-scene-select">Example <select id="pg-scene-select"><option value="scene0011_00">Same room · Chair near TV</option><option value="scene0025_00">Another room · Sofa by door</option><option value="scene0050_01">Another room · Sofa chair</option></select></label></div>
               <div class="pipeline-stages" role="group" aria-label="PruneGround pipeline stages">
                 <button type="button" data-pg-stage="full" aria-pressed="true"><span>01</span> Full scene</button>
                 <button type="button" data-pg-stage="pruned" aria-pressed="false"><span>02</span> Pruned region</button>
@@ -309,7 +309,8 @@
                   <div><span>Pruned triangles</span><strong id="pg-pruned-faces">—</strong></div>
                   <div><span>Geometry retained</span><strong id="pg-retention">—</strong></div>
                 </div>
-                <p>Meshes and reformulations: <a href="https://github.com/leduckhai/PruneGround/tree/main/examples" target="_blank" rel="noopener">official PruneGround examples ↗</a>. Chair highlights: <a href="https://huggingface.co/datasets/marvex/scannet-dataset/tree/main/scene0011_00" target="_blank" rel="noopener">ScanNet instance annotations (mirror) ↗</a>. Reference boxes are computed from annotated mesh vertices. The doorway description was written for this demo; it has no released pruning or reformulation output.</p>
+                <p>Full scans, the TV query and other-room outputs: <a href="https://github.com/leduckhai/PruneGround/tree/main/examples" target="_blank" rel="noopener">official PruneGround examples ↗</a>. Doorway query: new inference on 22 Oct 2026 using the unmodified public code, Qwen2.5-VL-7B and its full prompt. <a href="assets/inference/README.md" target="_blank" rel="noopener">All three attempted configurations, limitations &amp; run records ↗</a>. The displayed run retains both chairs; the two short-prompt runs missed part or all of chair B. This single-scene demonstration is not a benchmark evaluation.</p>
+                <p>Chair highlights: <a href="https://huggingface.co/datasets/marvex/scannet-dataset/tree/main/scene0011_00" target="_blank" rel="noopener">ScanNet instance annotations (mirror) ↗</a>. Reference boxes are computed from annotated mesh vertices, never presented as predictions. The site loads saved results; selecting a description does not launch GPU inference.</p>
               </details>
             </div>
             <aside class="explorer-info">
@@ -327,8 +328,8 @@
                 <blockquote id="pg-query">“This is a single chair nearest the TV”</blockquote>
                 </div>
                 <div class="stage-explanation" aria-live="polite"><span class="data-badge" id="pg-stage-badge">Released input</span><h3 id="pg-stage-title">Start with the full room</h3><p id="pg-stage-description">The description points to a chair, but the room contains many similar candidates.</p></div>
-                <div class="reformulation-block" id="pg-reformulation-panel" hidden><p class="mini-kicker">MCDR · released model output</p><h4 id="pg-target">Target: chair</h4><div id="pg-reformulation"></div><p class="story-footnote">These are model-generated statements, shown as released; they may contain errors.</p></div>
-                <div class="grounding-note" id="pg-grounding-note" hidden><b>Predicted target box: not released</b><p id="pg-grounding-detail">The outlined chair is a ScanNet reference annotation, not a PruneGround prediction.</p></div>
+                <div class="reformulation-block" id="pg-reformulation-panel" hidden><p class="mini-kicker">MCDR · saved model output</p><h4 id="pg-target">Target: chair</h4><div id="pg-reformulation"></div><p class="story-footnote">Unedited model output, not verified facts. In the doorway run, appearance details such as “wooden, brown” may be incorrect.</p></div>
+                <div class="grounding-note" id="pg-grounding-note" hidden><b>Predicted target box: not available</b><p id="pg-grounding-detail">The outlined chair is a ScanNet reference annotation, not a PruneGround prediction.</p></div>
                 <button type="button" class="story-next" id="pg-next-stage">Show pruned region <span aria-hidden="true">→</span></button>
               </div>
               <p class="explorer-source">Open “Mesh statistics &amp; data sources” below the scene to inspect the geometry counts and original data.</p>

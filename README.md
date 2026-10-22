@@ -17,10 +17,10 @@ One Three.js canvas tells a two-step story:
    boxes come from ScanNet instance annotations (chairs 4 and 9; TV 18 and doors
    30), not model predictions. The two descriptions identify opposite ends of
    the same table. Orbit, zoom, top view and reset work throughout.
-2. **How PruneGround solves it:** inspect full mesh → released pruned mesh →
-   released MCDR text → target availability. This continues in the same room
-   with the released TV query. If the doorway query was selected, a visible
-   transition explains the query change. Two other released scenes remain
+2. **How PruneGround solves it:** inspect full mesh → pruned mesh →
+   MCDR text → target availability. This continues in the same room with the
+   selected query: the authors' released TV output for A, or new Runpod
+   inference for the doorway query B. Two other released scenes remain
    available in the example selector and are explicitly marked as other rooms.
 
 The official examples do **not** include downstream predicted target boxes.
@@ -30,9 +30,19 @@ the axis-aligned extent of the pruned mesh, not the VLM's original crop box or a
 grounded target prediction. `predictedBox` is intentionally `null` in each scene
 definition; only populate it with a real, aligned downstream result.
 
-Full/pruned PLYs and the unedited `reformulation.json` files originate from
+Full PLYs, TV-query and other-room outputs originate from
 [`leduckhai/PruneGround`](https://github.com/leduckhai/PruneGround/tree/main/examples).
-MCDR statements are model output and may contain errors. These released scenes
+The doorway variant in `assets/3d/scene0011_00/door/` was generated on an L40S
+using the unmodified public code, Qwen2.5-VL-7B and its full prompt. It retains
+all reference vertices of chair B **and chair A** and 35.4% of full-scene
+triangles. This is broad pruning, not completed grounding. Two short-prompt
+configurations failed to retain chair B completely; all attempts, raw outputs
+and provenance are documented in [the inference record](assets/inference/README.md).
+This is one demo, not a reproduction of benchmark metrics. The browser loads
+saved assets; it never runs the model. Full-scene geometry is shared across
+query variants, with separate pruning/reformulation caches.
+
+MCDR statements are unedited model output and may contain errors. These scenes
 are not claimed to be the source scenes of paper Figures 1 and 3. The static
 Figure 1 illustration has been removed from the page.
 
@@ -48,6 +58,16 @@ node scripts/build-reference-targets.cjs /path/to/scene0011_00.aggregation.json 
 
 The generator verifies vertex-count agreement and the nearest-chair relations
 against all annotated chairs. It applies the same ScanNet axis-alignment matrix
-as the viewer. The doorway description is authored for this demonstration; no
-pruning/reformulation output is implied for it. Mesh statistics and source links
-are in the collapsed details panel.
+as the viewer. The doorway description is authored for this demonstration.
+Reference labels were used only to validate outputs after inference, not as
+model input. Mesh statistics and source links are in the collapsed details panel.
+
+## Viewer regression check
+
+With Playwright and its Chromium browser installed, serve this directory with
+`python3 -m http.server 8765 --bind 127.0.0.1`, then run
+`node scripts/test-explorer.cjs` in another terminal. `EXPLORER_URL` can point to
+a deployed copy. The test checks both query-specific meshes and reference targets,
+the unedited doorway reformulation, one shared full-room download, rapid query
+changes, other scenes, orbit/top view, keyboard controls and mobile overflow.
+Screenshots are saved to a temporary directory reported by the test.

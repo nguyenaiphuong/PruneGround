@@ -1,0 +1,15 @@
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.52, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.56it/s]Loading checkpoint shards:  40%|████      | 2/5 [00:01<00:01,  1.56it/s]Loading checkpoint shards:  60%|██████    | 3/5 [00:01<00:01,  1.57it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:02<00:00,  1.58it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:02<00:00,  2.13it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:02<00:00,  1.84it/s]
+- target name: chair
+- anchors name: doorway
+- anchors not in description but visible: table
+- reformulated_description:
+  + target properties: wooden, brown
+  + augmented target properties: has armrests
+  + single target single anchor utterances:
+    - the chair is left of the doorway
+    - the chair is next to the table
+  + augmented single target - single anchor utterances:
+    - the chair is on the floor
+
+Saved reformulation to /workspace/pruneground-task-20261022/results/chair-door-uunuwn0w/output/scene0011_00/reformulation.json

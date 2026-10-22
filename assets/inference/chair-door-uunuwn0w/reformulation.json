@@ -1,0 +1,25 @@
+{
+  "target": "chair",
+  "anchors": [
+    "doorway"
+  ],
+  "anchors_visual": [
+    "table"
+  ],
+  "target_properties": [
+    "wooden, brown"
+  ],
+  "augmented_target_properties": [
+    "has armrests"
+  ],
+  "utterances": [
+    "the chair is left of the doorway",
+    "the chair is next to the table"
+  ],
+  "augmented_utterances": [
+    "the chair is on the floor"
+  ],
+  "raw": "- target name: chair\n- anchors name: doorway\n- anchors not in description but visible: table\n- reformulated_description:\n  + target properties: wooden, brown\n  + augmented target properties: has armrests\n  + single target single anchor utterances:\n    - the chair is left of the doorway\n    - the chair is next to the table\n  + augmented single target - single anchor utterances:\n    - the chair is on the floor",
+  "original_description": "The chair nearest the doorway, at the opposite end of the table from the TV.",
+  "reformulated_description": "Target: chair\n- wooden, brown\n- has armrests\n- the chair is left of the doorway\n- the chair is next to the table\n- the chair is on the floor"
+}

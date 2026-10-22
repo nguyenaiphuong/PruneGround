@@ -1,0 +1,29 @@
+{
+  "target": "chair",
+  "anchors": [
+    "doorway",
+    "TV"
+  ],
+  "anchors_visual": [
+    "table"
+  ],
+  "target_properties": [
+    "the chair is brown and wooden"
+  ],
+  "augmented_target_properties": [
+    "the chair is positioned near the doorway and the TV"
+  ],
+  "utterances": [
+    "the chair is next to the TV",
+    "the chair is behind the doorway",
+    "the chair is in front of the table"
+  ],
+  "augmented_utterances": [
+    "the chair is next to the TV",
+    "the chair is behind the doorway",
+    "the chair is in front of the table"
+  ],
+  "raw": "- target: chair\n- anchors name: [doorway, TV]\n- anchors not in description but visible: [table]\n- reformulated_description:\n  + target properties: the chair is brown and wooden\n  + augmented target properties: the chair is positioned near the doorway and the TV\n  + single target single anchor utterances:\n    - the chair is next to the TV\n    - the chair is behind the doorway\n    - the chair is in front of the table\n  + augmented single target single anchor utterances:\n    - the chair is next to the TV\n    - the chair is behind the doorway\n    - the chair is in front of the table",
+  "original_description": "The chair nearest the doorway, at the opposite end of the table from the TV.",
+  "reformulated_description": "Target: chair\n- the chair is brown and wooden\n- the chair is positioned near the doorway and the TV\n- the chair is next to the TV\n- the chair is behind the doorway\n- the chair is in front of the table\n- the chair is next to the TV\n- the chair is behind the doorway\n- the chair is in front of the table"
+}
