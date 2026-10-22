@@ -858,6 +858,7 @@ figcaption {
 }
 
 .pg-loading.is-hidden { display: none; }
+.pg-webgl-error[hidden] { display: none; }
 .pg-loading b { font-size: 13px; }
 .pg-loading small { color: #a9a1b0; font-family: var(--font-mono); font-size: 9px; }
 
