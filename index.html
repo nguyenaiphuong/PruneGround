@@ -58,12 +58,12 @@
   </script>
 
   <script>document.documentElement.classList.add('has-js')</script>
-  <link rel="stylesheet" href="styles.css?v=20261022b">
+  <link rel="stylesheet" href="styles.css?v=20261022-story1">
   <script src="assets/vendor/three-r128/three.min.js" defer></script>
   <script src="assets/vendor/three-r128/PLYLoader.js" defer></script>
   <script src="assets/vendor/three-r128/OrbitControls.js" defer></script>
   <script src="script.js?v=20261022" defer></script>
-  <script src="3d-explorer.js?v=20261022b" defer></script>
+  <script src="3d-explorer.js?v=20261022-story1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -186,13 +186,6 @@
           </article>
         </div>
 
-        <figure class="paper-figure reveal">
-          <button class="figure-button" type="button" data-lightbox="assets/images/intuition.png" aria-label="Open the spatial pruning intuition figure">
-            <img src="assets/images/intuition.png" alt="A 3D room and top-view image showing how two chair descriptions identify different local spatial regions" loading="lazy" width="1630" height="788">
-            <span class="expand-hint">Expand figure <span aria-hidden="true">↗</span></span>
-          </button>
-          <figcaption><b>Human-inspired spatial attention.</b> Anchor objects and relations identify the useful region before fine-grained grounding.</figcaption>
-        </figure>
       </div>
     </section>
 
@@ -256,72 +249,91 @@
       <div class="shell">
         <div class="section-heading reveal">
           <p class="section-kicker">03 · Interactive Explorer</p>
-          <h2>See spatial pruning<br><span>in three dimensions.</span></h2>
-          <p>Orbit the original ScanNet mesh, inspect the language-guided retained region, then switch to the pruned scene passed to the downstream grounder.</p>
+          <h2>Same room.<br><span>Language changes the target.</span></h2>
+          <p>First, see why spatial relationships matter. Then follow a released PruneGround example through pruning and description reformulation.</p>
         </div>
 
-        <div class="explorer-card reveal">
-          <div class="explorer-tabs" role="tablist" aria-label="PruneGround example scenes">
-            <button type="button" role="tab" aria-selected="true" data-pg-scene="scene0011_00"><span>01</span> Chair near TV</button>
-            <button type="button" role="tab" aria-selected="false" data-pg-scene="scene0025_00"><span>02</span> Sofa by door</button>
-            <button type="button" role="tab" aria-selected="false" data-pg-scene="scene0050_01"><span>03</span> Sofa chair</button>
+        <div class="explorer-card reveal" id="pg-explorer">
+          <div class="explorer-header"><b>Interactive 3D <span>— PruneGround</span></b><span class="explorer-live">Explore the real scan</span></div>
+          <div class="story-tabs" role="tablist" aria-label="Explore PruneGround in two steps">
+            <button type="button" id="pg-tab-why" role="tab" aria-selected="true" aria-controls="pg-story-panel" data-pg-step="why"><span>1</span> Why spatial reasoning matters</button>
+            <button type="button" id="pg-tab-how" role="tab" aria-selected="false" aria-controls="pg-story-panel" tabindex="-1" data-pg-step="how"><span>2</span> How PruneGround solves it</button>
           </div>
-
-          <div class="explorer-stage">
+          <div id="pg-story-panel" role="tabpanel" aria-labelledby="pg-tab-why">
+            <div class="story-heading">
+              <div><h3 id="pg-story-title">Same room. Different descriptions.</h3><p id="pg-story-subtitle">Several chairs look alike. Choose a description to see which one its spatial relationship identifies.</p></div>
+              <span class="scene-chip" id="pg-room-label">Room · scene0011_00</span>
+            </div>
+            <div class="query-choices" id="pg-query-choices" role="group" aria-label="Choose a chair description">
+              <button type="button" data-pg-query="tv" aria-pressed="true"><span class="query-letter">A</span><span>The chair nearest the <b>TV</b><small>One end of the table</small></span></button>
+              <button type="button" data-pg-query="door" aria-pressed="false"><span class="query-letter">B</span><span>The chair nearest the <b>doorway</b><small>The opposite end of the table</small></span></button>
+            </div>
+            <div class="pipeline-controls" id="pg-pipeline-controls" hidden>
+              <div class="pipeline-context"><p id="pg-transition-note" role="status"></p><label for="pg-scene-select">Released example <select id="pg-scene-select"><option value="scene0011_00">Same room · Chair near TV</option><option value="scene0025_00">Another room · Sofa by door</option><option value="scene0050_01">Another room · Sofa chair</option></select></label></div>
+              <div class="pipeline-stages" role="group" aria-label="PruneGround pipeline stages">
+                <button type="button" data-pg-stage="full" aria-pressed="true"><span>01</span> Full scene</button>
+                <button type="button" data-pg-stage="pruned" aria-pressed="false"><span>02</span> Pruned region</button>
+                <button type="button" data-pg-stage="reformulated" aria-pressed="false"><span>03</span> Reformulated description</button>
+                <button type="button" data-pg-stage="target" aria-pressed="false"><span>04</span> Target grounding</button>
+              </div>
+            </div>
+            <div class="explorer-stage">
             <div class="viewer-column">
               <div class="viewer-toolbar" aria-label="3D viewer controls">
-                <div class="mode-switch" role="group" aria-label="Mesh mode">
-                  <button type="button" class="active" data-pg-mode="full">Full scene</button>
-                  <button type="button" data-pg-mode="pruned">Pruned scene</button>
-                </div>
+                <span id="pg-view-label">Full room · reference highlights</span>
                 <div class="viewer-actions">
-                  <button type="button" id="pg-region-toggle" aria-pressed="true">Region on</button>
+                  <button type="button" id="pg-top-view" aria-pressed="false">Top view</button>
                   <button type="button" id="pg-reset-view">Reset view</button>
                 </div>
               </div>
-
-              <div class="pg-canvas-wrap" id="pg-canvas-wrap">
+              <div class="pg-canvas-wrap" id="pg-canvas-wrap" role="region" aria-label="Interactive ScanNet room. Chair A nearest the TV is highlighted.">
                 <div class="pg-loading" id="pg-loading" role="status">
                   <span class="pg-spinner" aria-hidden="true"></span>
                   <b>Loading 3D scene…</b>
                   <small id="pg-load-progress">Preparing mesh</small>
                 </div>
-                <div class="pg-webgl-error" id="pg-webgl-error" hidden>
+                <div class="pg-webgl-error" id="pg-webgl-error" role="alert" hidden>
                   This interactive view needs WebGL. Try a current desktop or mobile browser.
                 </div>
-                <div class="viewer-legend">
-                  <span><i class="legend-region"></i> LGSP retained region</span>
-                  <span><i class="legend-mesh"></i> Vertex-coloured ScanNet mesh</span>
+                <div class="pg-object-labels" id="pg-object-labels" aria-hidden="true"></div>
+                <div class="viewer-legend" id="pg-legend">
+                  <span><i class="legend-chair-a"></i> A · chair near TV</span>
+                  <span><i class="legend-chair-b"></i> B · chair near doorway</span>
                 </div>
                 <div class="viewer-hint">Drag to orbit · scroll/pinch to zoom</div>
               </div>
-
-              <div class="mesh-stats" aria-live="polite">
-                <div><span>Scene</span><strong id="pg-scene-id">scene0011_00</strong></div>
-                <div><span>Full triangles</span><strong id="pg-full-faces">—</strong></div>
-                <div><span>Pruned triangles</span><strong id="pg-pruned-faces">—</strong></div>
-                <div><span>Geometry retained</span><strong id="pg-retention">—</strong></div>
-              </div>
+              <details class="mesh-details"><summary>Mesh statistics &amp; data sources</summary>
+                <div class="mesh-stats">
+                  <div><span>Scene</span><strong id="pg-scene-id">scene0011_00</strong></div>
+                  <div><span>Full triangles</span><strong id="pg-full-faces">—</strong></div>
+                  <div><span>Pruned triangles</span><strong id="pg-pruned-faces">—</strong></div>
+                  <div><span>Geometry retained</span><strong id="pg-retention">—</strong></div>
+                </div>
+                <p>Meshes and reformulations: <a href="https://github.com/leduckhai/PruneGround/tree/main/examples" target="_blank" rel="noopener">official PruneGround examples ↗</a>. Chair highlights: <a href="https://huggingface.co/datasets/marvex/scannet-dataset/tree/main/scene0011_00" target="_blank" rel="noopener">ScanNet instance annotations (mirror) ↗</a>. Reference boxes are computed from annotated mesh vertices. The doorway description was written for this demo; it has no released pruning or reformulation output.</p>
+              </details>
             </div>
-
-            <aside class="explorer-info" aria-live="polite">
-              <div class="info-block">
+            <aside class="explorer-info">
+              <div id="pg-why-info" aria-live="polite">
+                <p class="mini-kicker">A spatial relationship selects the chair</p>
+                <h3 id="pg-choice-title">A · Chair nearest the TV</h3>
+                <p id="pg-choice-explanation">The TV anchors this description to one end of the table. Switch to the doorway description and the target moves to the opposite end.</p>
+                <div class="reference-note"><span class="data-badge">Reference annotation</span><p>Highlights identify labeled objects in the scan. They let you compare the two descriptions before exploring the method.</p></div>
+                <button type="button" class="story-next" id="pg-continue">Follow PruneGround in this room <span aria-hidden="true">→</span></button>
+                <p class="story-footnote" id="pg-continue-note">Continue with the released “chair nearest the TV” example.</p>
+              </div>
+              <div id="pg-how-info" hidden>
+                <div class="info-block">
                 <p class="mini-kicker">Original description</p>
                 <blockquote id="pg-query">“This is a single chair nearest the TV”</blockquote>
+                </div>
+                <div class="stage-explanation" aria-live="polite"><span class="data-badge" id="pg-stage-badge">Released input</span><h3 id="pg-stage-title">Start with the full room</h3><p id="pg-stage-description">The description points to a chair, but the room contains many similar candidates.</p></div>
+                <div class="reformulation-block" id="pg-reformulation-panel" hidden><p class="mini-kicker">MCDR · released model output</p><h4 id="pg-target">Target: chair</h4><div id="pg-reformulation"></div><p class="story-footnote">These are model-generated statements, shown as released; they may contain errors.</p></div>
+                <div class="grounding-note" id="pg-grounding-note" hidden><b>Predicted target box: not released</b><p id="pg-grounding-detail">The outlined chair is a ScanNet reference annotation, not a PruneGround prediction.</p></div>
+                <button type="button" class="story-next" id="pg-next-stage">Show pruned region <span aria-hidden="true">→</span></button>
               </div>
-              <div class="info-divider" aria-hidden="true"><span>LGSP</span><i></i><span>MCDR</span></div>
-              <div class="info-block reformulation-block">
-                <p class="mini-kicker">Reformulated description</p>
-                <h3 id="pg-target">Target: chair</h3>
-                <ul id="pg-reformulation">
-                  <li>The chair is brown and worn out.</li>
-                  <li>The chair is behind the TV.</li>
-                  <li>The chair is next to the TV.</li>
-                  <li>The chair is on the floor.</li>
-                </ul>
-              </div>
-              <p class="explorer-source">Meshes and reformulations are from the <a href="https://github.com/leduckhai/PruneGround/tree/main/examples" target="_blank" rel="noopener">official released examples <span aria-hidden="true">↗</span></a>. They illustrate the pipeline and are not the exact unpublished scenes from Figures 1 and 3.</p>
+              <p class="explorer-source">Open “Mesh statistics &amp; data sources” below the scene to inspect the geometry counts and original data.</p>
             </aside>
+            </div>
           </div>
         </div>
       </div>
