@@ -63,7 +63,7 @@
   <script src="assets/vendor/three-r128/PLYLoader.js" defer></script>
   <script src="assets/vendor/three-r128/OrbitControls.js" defer></script>
   <script src="script.js?v=20261022" defer></script>
-  <script src="3d-explorer.js?v=20261022-mcdr2" defer></script>
+  <script src="3d-explorer.js?v=20261022-visual-context1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -265,8 +265,8 @@
               <span class="scene-chip" id="pg-room-label">Room · scene0011_00</span>
             </div>
             <div class="query-choices" id="pg-query-choices" role="group" aria-label="Choose a chair description">
-              <button type="button" data-pg-query="tv" aria-pressed="true"><span class="query-letter">A</span><span>The chair nearest the <b>TV</b><small>One end of the table</small></span></button>
-              <button type="button" data-pg-query="door" aria-pressed="false"><span class="query-letter">B</span><span>The chair nearest the <b>doorway</b><small>The opposite end of the table</small></span></button>
+              <button type="button" data-pg-query="tv" aria-pressed="true"><span class="query-letter">A</span><span>The chair nearest the <b>TV</b><small>At the short end · between the table and TV</small></span></button>
+              <button type="button" data-pg-query="door" aria-pressed="false"><span class="query-letter">B</span><span>The chair nearest the <b>doorway</b><small>At the opposite short end · between the table and doorway</small></span></button>
             </div>
             <div class="pipeline-controls" id="pg-pipeline-controls" hidden>
               <div class="pipeline-context"><p id="pg-transition-note" role="status"></p><label for="pg-scene-select">Example <select id="pg-scene-select"><option value="scene0011_00">Same room · Chair near TV</option><option value="scene0025_00">Another room · Sofa by door</option><option value="scene0050_01">Another room · Sofa chair</option></select></label></div>
@@ -310,14 +310,14 @@
                   <div><span>Geometry retained</span><strong id="pg-retention">—</strong></div>
                 </div>
                 <p>Scene data and chair A: <a href="https://github.com/leduckhai/PruneGround/tree/main/examples" target="_blank" rel="noopener">official examples ↗</a>. Chair B’s displayed region is manually specified from its reference bounds; MCDR was rerun on two fresh views of this crop. <a href="assets/3d/scene0011_00/door/display-crop.json" target="_blank" rel="noopener">Crop details ↗</a> · <a href="assets/inference/mcdr-door-crop-5dnil1dt/manifest.json" target="_blank" rel="noopener">MCDR run ↗</a> · <a href="assets/inference/README.md" target="_blank" rel="noopener">Run records ↗</a>.</p>
-                <p>Chair boxes use <a href="https://huggingface.co/datasets/marvex/scannet-dataset/tree/main/scene0011_00" target="_blank" rel="noopener">ScanNet reference labels ↗</a>, not downstream model predictions. MCDR text is model-generated and may contain errors.</p>
+                <p>Chair boxes use <a href="https://huggingface.co/datasets/marvex/scannet-dataset/tree/main/scene0011_00" target="_blank" rel="noopener">ScanNet reference labels ↗</a>, not downstream model predictions. The displayed A/B descriptions were edited from full-room and local views; original model outputs remain unchanged in the source files. Other rooms retain their released MCDR text.</p>
               </details>
             </div>
             <aside class="explorer-info">
               <div id="pg-why-info" aria-live="polite">
                 <p class="mini-kicker">A spatial relationship selects the chair</p>
                 <h3 id="pg-choice-title">A · Chair nearest the TV</h3>
-                <p id="pg-choice-explanation">The TV anchors this description to one end of the table. Switch to the doorway description and the target moves to the opposite end.</p>
+                <p id="pg-choice-explanation">Choose the chair at the short end of the table, between the table and the TV. It is opposite chair B, not one of the chairs in the two rows along the long sides.</p>
                 <div class="reference-note"><span class="data-badge">Reference annotation</span><p>Highlights identify labeled objects in the scan. They let you compare the two descriptions before exploring the method.</p></div>
                 <button type="button" class="story-next" id="pg-continue">Follow PruneGround in this room <span aria-hidden="true">→</span></button>
                 <p class="story-footnote" id="pg-continue-note">Continue with chair A in the same room.</p>
@@ -328,7 +328,7 @@
                 <blockquote id="pg-query">“This is a single chair nearest the TV”</blockquote>
                 </div>
                 <div class="stage-explanation" aria-live="polite"><span class="data-badge" id="pg-stage-badge">Released input</span><h3 id="pg-stage-title">Start with the full room</h3><p id="pg-stage-description">The description points to a chair, but the room contains many similar candidates.</p></div>
-                <div class="reformulation-block" id="pg-reformulation-panel" hidden><p class="mini-kicker">MCDR · saved model output</p><h4 id="pg-target">Target: chair</h4><div id="pg-reformulation"></div></div>
+                <div class="reformulation-block" id="pg-reformulation-panel" hidden><p class="mini-kicker" id="pg-reformulation-label">Spatial description</p><h4 id="pg-target">Target: chair</h4><p id="pg-refined-description" hidden></p><div id="pg-reformulation"></div></div>
                 <div class="grounding-note" id="pg-grounding-note" hidden><b>Predicted target box: not available</b><p id="pg-grounding-detail">The outlined chair is a ScanNet reference annotation, not a PruneGround prediction.</p></div>
                 <button type="button" class="story-next" id="pg-next-stage">Show pruned region <span aria-hidden="true">→</span></button>
               </div>

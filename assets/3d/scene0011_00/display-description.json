@@ -1,0 +1,13 @@
+{
+  "source": "editorial_visual_review",
+  "model_generated": false,
+  "reference_target": 4,
+  "review_basis": "Full-room side views 1–4 and top view, local X/Y views, and ScanNet reference object 4. Spatial context is read from the full room, not inferred from the isolated crop.",
+  "original_description": "This is a single chair nearest the TV",
+  "target": "chair A · TV end",
+  "description": "The brown chair at the short end of the long table nearest the TV, between the table and the TV. It is opposite the doorway-end chair, not one of the chairs along the table’s long sides.",
+  "target_properties": ["Brown seat and backrest with a dark, slender leg frame."],
+  "augmented_target_properties": [],
+  "utterances": ["At the short end of the table nearest the TV.", "Between the table and the wall-mounted TV."],
+  "augmented_utterances": ["Opposite chair B across the length of the table; not in either row of side chairs."]
+}

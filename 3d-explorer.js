@@ -153,7 +153,7 @@
       const root = 'assets/3d/' + key;
       cache.set(key, Promise.allSettled([
         sceneInputs(id), loadPly(root + (variant ? '/display-crop.ply' : '/pruned.ply'), null, id),
-        readJSON(root + '/reformulation.json' + (variant ? '?v=mcdr-door-crop-5dnil1dt' : ''))
+        readJSON(root + (id === 'scene0011_00' ? '/display-description.json?v=visual-context-1' : '/reformulation.json'))
       ]).then((results) => {
         const failure = results.find((result) => result.status === 'rejected');
         if (failure) {
@@ -231,8 +231,8 @@
       : 'Explore the selected chair, its local region and a refined description.';
     $('pg-choice-title').textContent = query.letter + ' · ' + query.name;
     $('pg-choice-explanation').textContent = state.query === 'tv'
-      ? 'The TV anchors this description to one end of the table. Switch to the doorway description and the target moves to the opposite end.'
-      : 'The doorway anchors this description to the other end of the table. The room stays the same; the spatial relationship changes which chair you mean.';
+      ? 'Choose the chair at the short end of the table, between the table and the TV. It is opposite chair B, not one of the chairs in the two rows along the long sides.'
+      : 'Choose the chair at the short end of the table, between the table and the doorway. It is opposite chair A at the TV end, not one of the chairs in the two rows along the long sides.';
     $('pg-continue-note').textContent = 'Continue with chair ' + query.letter + ' in the same room.';
     $('pg-transition-note').textContent = state.scene !== 'scene0011_00'
       ? 'Different room · ' + definition.name + '.'
@@ -244,7 +244,9 @@
     const descriptions = {
       full: ['Original input', 'Start with the full room', 'The original description must distinguish its target from the other objects in this full ScanNet mesh.'],
       pruned: [doorwayRun ? 'Local region' : 'LGSP', 'Focus on the selected object', 'The purple outline shows the local region around the ' + (state.scene === 'scene0011_00' ? 'chair' : 'object') + '. Compare it with the full room.'],
-      reformulated: ['MCDR', 'Add local visual context', 'Inspect the saved target properties and spatial relations.'],
+      reformulated: state.scene === 'scene0011_00'
+        ? ['Refined description', 'Identify this chair in the room', 'Combine visible chair details with its position relative to the table, TV and doorway.']
+        : ['MCDR', 'Add local visual context', 'Inspect the saved target properties and spatial relations.'],
       target: hasPrediction
         ? ['Released prediction', 'The predicted target', 'This box comes from the supplied downstream grounding result.']
         : hasReference
@@ -291,12 +293,16 @@
   }
 
   function buildReformulations(data) {
+    const reviewed = data.source === 'editorial_visual_review';
+    $('pg-reformulation-label').textContent = reviewed ? 'Spatial description' : 'MCDR · saved model output';
     $('pg-target').textContent = 'Target: ' + data.target;
+    $('pg-refined-description').textContent = data.description || '';
+    $('pg-refined-description').hidden = !data.description;
     const groups = [
-      ['Target properties', data.target_properties],
+      [reviewed ? 'Visible details' : 'Target properties', data.target_properties],
       ['Visual additions', data.augmented_target_properties],
-      ['Target–anchor relations', data.utterances],
-      ['Additional relations', data.augmented_utterances]
+      [reviewed ? 'Room context' : 'Target–anchor relations', data.utterances],
+      [reviewed ? 'How to distinguish it' : 'Additional relations', data.augmented_utterances]
     ];
     $('pg-reformulation').replaceChildren(...groups.filter(([, lines]) => lines?.length).map(([name, lines]) => {
       const group = document.createElement('div');

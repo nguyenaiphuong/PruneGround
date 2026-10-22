@@ -26,6 +26,25 @@ for (const [name, view] of Object.entries(mcdrRun.views)) {
   assert.equal(hash(fs.readFileSync(path.join(runDir, 'local_views', name))), view.sha256);
 }
 assert.ok(fs.readFileSync(path.join(runDir, 'mcdr.log'), 'utf8').includes(JSON.parse(activeJSON).raw));
+const reviewed = {};
+for (const [query, variant, target] of [['tv', '', 4], ['door', '/door', 9]]) {
+  const data = JSON.parse(fs.readFileSync(root + '/assets/3d/scene0011_00' + variant + '/display-description.json'));
+  assert.equal(data.source, 'editorial_visual_review');
+  assert.equal(data.model_generated, false);
+  assert.equal(data.reference_target, target);
+  assert.match(data.description, /short end/);
+  assert.match(data.description, /long sides/);
+  assert.doesNotMatch(JSON.stringify(data), /cushioned|wooden floor|white wall|behind the TV/);
+  reviewed[query] = data;
+}
+assert.notEqual(reviewed.tv.description, reviewed.door.description);
+const checkDescription = async (page, query) => {
+  const data = reviewed[query];
+  assert.equal(await page.locator('#pg-refined-description').textContent(), data.description);
+  assert.deepEqual(await page.locator('#pg-reformulation li').allTextContents(), [...data.target_properties, ...data.augmented_target_properties, ...data.utterances, ...data.augmented_utterances]);
+  assert.equal(await page.locator('#pg-reformulation-label').textContent(), 'Spatial description');
+  assert.doesNotMatch(await page.locator('#pg-reformulation-panel').textContent(), /saved model output|illustrative|cushioned|white wall|wooden floor|behind the TV/);
+};
 
 (async () => {
   const browser = await chromium.launch({headless: true, args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-sandbox']});
@@ -90,8 +109,7 @@ assert.ok(fs.readFileSync(path.join(runDir, 'mcdr.log'), 'utf8').includes(JSON.p
   assert.doesNotMatch(await page.locator('#pg-stage-description').textContent(), /inference|illustrative|35\.4/);
   await page.locator('#pg-explorer').screenshot({path: shots + '/story-pruned.png'});
   await page.click('[data-pg-stage="reformulated"]');
-  const original = JSON.parse(fs.readFileSync(root + '/assets/3d/scene0011_00/door/reformulation.json'));
-  assert.deepEqual(await page.locator('#pg-reformulation li').allTextContents(), [...original.target_properties, ...original.augmented_target_properties, ...original.utterances, ...original.augmented_utterances]);
+  await checkDescription(page, 'door');
   await page.locator('#pg-explorer').screenshot({path: shots + '/story-reformulated.png'});
   await page.click('[data-pg-stage="target"]');
   await frame(page);
@@ -108,6 +126,10 @@ assert.ok(fs.readFileSync(path.join(runDir, 'mcdr.log'), 'utf8').includes(JSON.p
     for (const stage of ['pruned', 'reformulated', 'target', 'full']) {
       await page.click('[data-pg-stage="' + stage + '"]');
       await frame(page);
+      if (stage === 'reformulated') {
+        assert.equal(await page.locator('#pg-reformulation-label').textContent(), 'MCDR · saved model output');
+        assert.equal(await page.locator('#pg-refined-description').isVisible(), false);
+      }
       if (stage === 'target') {
         assert.equal(await page.locator('#pg-stage-badge').textContent(), 'Prediction not released');
         assert.equal(await page.locator('#pg-object-labels span').count(), 0);
@@ -127,6 +149,9 @@ assert.ok(fs.readFileSync(path.join(runDir, 'mcdr.log'), 'utf8').includes(JSON.p
   assert.equal(await page.locator('#pg-pruned-faces').textContent(), '11,597');
   await page.click('#pg-continue');
   assert.match(await page.locator('#pg-query').textContent(), /single chair nearest the TV/);
+  await page.click('[data-pg-stage="reformulated"]');
+  await checkDescription(page, 'tv');
+  await page.locator('#pg-explorer').screenshot({path: shots + '/story-reformulated-a.png'});
   await page.click('[data-pg-stage="target"]');
   assert.equal(await page.locator('.chair-tv.selected').count(), 1);
   assert.match(await page.locator('#pg-object-labels').textContent(), /A · Reference/);
@@ -139,7 +164,8 @@ assert.ok(fs.readFileSync(path.join(runDir, 'mcdr.log'), 'utf8').includes(JSON.p
   assert.equal(await page.locator('.chair-door.selected').count(), 1);
   assert.equal(fullRequests.length, 1, 'Both query variants must share the full room download');
   assert.ok(doorRequests.some(url => url.endsWith('/display-crop.ply')));
-  assert.ok(doorRequests.some(url => url.endsWith('/reformulation.json?v=mcdr-door-crop-5dnil1dt')));
+  assert.ok(doorRequests.some(url => url.endsWith('/display-description.json?v=visual-context-1')));
+  assert.ok(!doorRequests.some(url => url.includes('/reformulation.json')), 'Raw model output must remain archived, not used as the edited description');
   assert.ok(!doorRequests.some(url => url.endsWith('/pruned.ply')), 'The wider original inference is archived, not displayed');
   await page.click('.mesh-details summary');
   assert.equal(await page.locator('.mesh-details').getAttribute('open'), '');
@@ -166,6 +192,8 @@ assert.ok(fs.readFileSync(path.join(runDir, 'mcdr.log'), 'utf8').includes(JSON.p
   await frame(page);
   await page.locator('#pg-explorer').screenshot({path: shots + '/story-mobile-how.png'});
   assert.equal(await page.locator('#pg-reformulation-panel').isVisible(), true);
+  await checkDescription(page, 'door');
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   assert.deepEqual(errors, []);
   console.log('Mobile: responsive layout and pipeline controls passed.');
   console.log('Screenshots:', shots);

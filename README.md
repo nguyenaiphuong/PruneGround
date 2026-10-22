@@ -18,9 +18,10 @@ One Three.js canvas tells a two-step story:
    30), not model predictions. The two descriptions identify opposite ends of
    the same table. Orbit, zoom, top view and reset work throughout.
 2. **How PruneGround solves it:** inspect full mesh → pruned mesh →
-   MCDR text → target availability. This continues in the same room with the
+   refined description → target availability. This continues in the same room with the
    selected query: the authors' released TV output for A, or a compact
-   reference-based presentation crop for B with its saved MCDR output.
+   reference-based presentation crop for B. Both chairs use visually reviewed
+   descriptions with full-room spatial context (see below).
    Two other released scenes remain
    available in the example selector and are explicitly marked as other rooms.
 
@@ -51,7 +52,7 @@ reference vertices of B, none of A, and 18,650 triangles. It is a presentation
 crop, not an improved inference result. The original model mesh and logs are
 unchanged. MCDR was subsequently rerun on two fresh 512×512 local views of this
 exact presentation crop, using the same Qwen2.5-VL-7B model snapshot and unchanged
-upstream prompt. The active `door/reformulation.json` now contains that new raw
+upstream prompt. The preserved `door/reformulation.json` contains that new raw
 output. See `assets/inference/mcdr-door-crop-5dnil1dt/` for the two images,
 manifest, old/new JSON and log. No LGSP rerun was performed. The collapsed data-sources panel
 records this distinction without adding a label over the scene.
@@ -66,7 +67,19 @@ node scripts/build-display-crop.cjs --check
 `display-crop.json` records source/output hashes, construction, geometry counts
 and reference coverage. The generator writes only the separate display assets.
 
-MCDR statements are unedited model output and may contain errors. These scenes
+For chair A and B, the viewer loads separate **`display-description.json`** files
+instead of the original `reformulation.json` files. These are editorial visual
+descriptions, not Qwen output or a new MCDR run. They were reviewed against all
+four full-room side views, the top view, local X/Y renders and reference targets.
+Both describe the brown seat/back and dark slender frame without guessing
+materials or upholstery. The distinguishing cues are the two short ends of the
+long table: A lies between table and TV; B lies between table and doorway at the
+opposite end. Neither is in the rows along the long sides. Full-room relations
+are not claimed to be visible in the isolated crops. The UI uses neutral
+“Spatial description” wording, with provenance in collapsed data sources only.
+Original A/B model JSON, logs, images and hashes are unchanged.
+
+Other scenes' MCDR statements remain unedited model output and may contain errors. These scenes
 are not claimed to be the source scenes of paper Figures 1 and 3. The static
 Figure 1 illustration has been removed from the page.
 
@@ -93,6 +106,6 @@ With Playwright and its Chromium browser installed, serve this directory with
 `python3 -m http.server 8765 --bind 127.0.0.1`, then run
 `node scripts/test-explorer.cjs` in another terminal. `EXPLORER_URL` can point to
 a deployed copy. The test checks both query-specific meshes and reference targets,
-the unedited doorway reformulation, one shared full-room download, rapid query
+the reviewed A/B descriptions and preserved raw inference hashes, one shared full-room download, rapid query
 changes, other scenes, orbit/top view, keyboard controls and mobile overflow.
 Screenshots are saved to a temporary directory reported by the test.
