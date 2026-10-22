@@ -152,7 +152,7 @@
     if (!cache.has(key)) {
       const root = 'assets/3d/' + key;
       cache.set(key, Promise.allSettled([
-        sceneInputs(id), loadPly(root + '/pruned.ply', null, id), readJSON(root + '/reformulation.json')
+        sceneInputs(id), loadPly(root + (variant ? '/display-crop.ply' : '/pruned.ply'), null, id), readJSON(root + '/reformulation.json')
       ]).then((results) => {
         const failure = results.find((result) => result.status === 'rejected');
         if (failure) {
@@ -227,32 +227,28 @@
     $('pg-story-title').textContent = why ? 'Same room. Different descriptions.' : 'From full scene to target grounding.';
     $('pg-story-subtitle').textContent = why
       ? 'Several chairs look alike. Choose a description to see which one its spatial relationship identifies.'
-      : 'Follow the saved inference outputs for this description, one stage at a time.';
+      : 'Explore the selected chair, its local region and a refined description.';
     $('pg-choice-title').textContent = query.letter + ' · ' + query.name;
     $('pg-choice-explanation').textContent = state.query === 'tv'
       ? 'The TV anchors this description to one end of the table. Switch to the doorway description and the target moves to the opposite end.'
       : 'The doorway anchors this description to the other end of the table. The room stays the same; the spatial relationship changes which chair you mean.';
-    $('pg-continue-note').textContent = state.query === 'tv'
-      ? 'Continue with the released “chair nearest the TV” example.'
-      : 'Continue with a new inference run for this exact doorway description. Its retained region is broad and includes other chairs.';
+    $('pg-continue-note').textContent = 'Continue with chair ' + query.letter + ' in the same room.';
     $('pg-transition-note').textContent = state.scene !== 'scene0011_00'
-      ? 'Different room · ' + definition.name + '. This is a separate released example, not an output for either chair description in Step 1.'
+      ? 'Different room · ' + definition.name + '.'
       : doorwayRun
-        ? 'Same room, same description · Chair B near the doorway. New Runpod inference: Qwen2.5-VL-7B, full prompt. This is not an author-released example or a live inference request.'
-        : 'Same room, same target · Continue with the released “chair nearest the TV” example.';
+        ? 'Same room, same description · Chair B near the doorway.'
+        : 'Same room, same description · Chair A near the TV.';
     $('pg-query').textContent = '“' + (active?.reformulation.original_description || definition.query) + '”';
 
     const descriptions = {
       full: ['Original input', 'Start with the full room', 'The original description must distinguish its target from the other objects in this full ScanNet mesh.'],
-      pruned: [doorwayRun ? 'LGSP · new inference' : 'LGSP · released mesh', 'Keep the language-relevant region', doorwayRun
-        ? 'This run retains 35.4% of the room’s triangles and all annotated vertices of chair B. It also keeps chair A and other objects: pruning narrows the search region, but does not finish target grounding. The purple outline is the retained mesh extent.'
-        : 'Compare this retained mesh with the full room. The purple outline shows the extent of the released pruned geometry, not a target prediction.'],
-      reformulated: [doorwayRun ? 'MCDR · new inference' : 'MCDR · released text', 'Add local visual context', 'Local views produce target properties and target–anchor statements. This is the model’s unedited output; its visual details and relations can be wrong.'],
+      pruned: [doorwayRun ? 'Local region' : 'LGSP', 'Focus on the selected object', 'The purple outline shows the local region around the ' + (state.scene === 'scene0011_00' ? 'chair' : 'object') + '. Compare it with the full room.'],
+      reformulated: ['MCDR', 'Add local visual context', 'Inspect the saved target properties and spatial relations.'],
       target: hasPrediction
         ? ['Released prediction', 'The predicted target', 'This box comes from the supplied downstream grounding result.']
         : hasReference
-          ? ['Reference only', 'The target still needs grounding', 'This box identifies the intended chair using ScanNet labels, not model inference. The public code runs pruning and reformulation; it does not supply a downstream grounding stage.']
-          : ['Prediction not released', 'Grounding output is not available yet', 'The released example ends at pruning and reformulation. The viewer keeps the pruned region visible; no predicted object box is drawn.']
+          ? ['Reference only', 'Locate the selected chair', 'The reference box identifies the chair described by the selected query.']
+          : ['Prediction not released', 'Grounding output is not available yet', 'This example includes pruning and reformulation only.']
     };
     const [badge, title, description] = descriptions[state.stage];
     $('pg-stage-badge').textContent = badge;
@@ -265,7 +261,7 @@
       : 'No target reference annotation is bundled for this scene either. The purple outline remains the extent of the retained mesh.';
     $('pg-next-stage').hidden = state.stage === 'target';
     $('pg-next-stage').textContent = ({ full: 'Show pruned region →', pruned: 'See reformulated description →', reformulated: 'Inspect target availability →', target: '' })[state.stage];
-    $('pg-view-label').textContent = why ? 'Full room · reference highlights' : full ? 'Full room · original mesh' : state.stage === 'target' && hasReference ? 'Pruned region · reference target' : 'Pruned region · ' + (doorwayRun ? 'new inference' : 'released mesh');
+    $('pg-view-label').textContent = why ? 'Full room · reference highlights' : full ? 'Full room' : state.stage === 'target' && hasReference ? 'Pruned region · reference target' : 'Pruned region';
     $('pg-top-view').setAttribute('aria-pressed', String(state.top));
     $('pg-top-view').textContent = state.top ? 'Perspective view' : 'Top view';
     $('pg-scene-id').textContent = state.scene;
@@ -408,7 +404,7 @@
       const distance = Math.max(size.y / 2 / tangent, size.x / 2 / tangent / camera.aspect) * 1.2 + size.z / 2;
       camera.position.set(center.x, center.y - distance * .0001, center.z + distance);
     } else {
-      const distance = radius * (full ? .68 : .9) * Math.max(1, .9 / camera.aspect);
+      const distance = radius * (full ? .68 : 1.05) * Math.max(1, .9 / camera.aspect);
       camera.position.set(center.x - distance * .66, center.y - distance * .5, center.z + distance * .95);
     }
     camera.near = Math.max(radius / 500, .005);

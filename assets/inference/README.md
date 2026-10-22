@@ -4,11 +4,16 @@ This is a single-scene demonstration, not a benchmark or a reproduction of paper
 The authors' released TV query is unchanged. The doorway output was generated separately
 on 22 October 2026 using their unmodified public LGSP and MCDR scripts.
 
+**Display update:** the website now uses a separate compact, reference-based crop
+for chair B. See [display-crop.json](../3d/scene0011_00/door/display-crop.json).
+That crop is manually specified, not an inference result. All original results
+below are unchanged, including the MCDR text still shown in the viewer.
+
 - Code: [leduckhai/PruneGround at 680945d](https://github.com/leduckhai/PruneGround/tree/680945de5c3a474f942b3e5645dd628ba2178552).
 - Scene: `scene0011_00`; original full mesh, top view and, for the full prompt, four RGB/depth side-view pairs.
 - Exact query: **The chair nearest the doorway, at the opposite end of the table from the TV.**
 - Hardware: NVIDIA L40S; PyTorch 2.8.0+cu128, Transformers 4.51.3, Open3D 0.19.0.
-- Decoding: upstream greedy generation (`do_sample=False`); prune padding 0.25 m, minimum crop size 1 m.
+- Decoding: upstream greedy generation (`do_sample=False`); prune padding 25% on each side, minimum crop size 1 m.
 - No reference object IDs, boxes or instance labels were provided to the model.
 
 ## All attempts
@@ -19,7 +24,7 @@ on 22 October 2026 using their unmodified public LGSP and MCDR scripts.
 | [chair-door-57_q9bo2](chair-door-57_q9bo2/manifest.json) | Qwen2.5-VL-7B / full | 35.44% | 100% | 100% |
 | [chair-door-uunuwn0w](chair-door-uunuwn0w/manifest.json) | Qwen2.5-VL-7B / simple | 6.99% | 0% | 0% |
 
-The **7B/full** run is displayed because it preserves the intended chair. Its crop
+The **7B/full** run was initially displayed because it preserves the intended chair. Its crop
 is broad: it retains both A and B and other furniture. It does not isolate or
 ground the target. The short-prompt attempts clip or miss B and are not shown as
 successful examples. This choice was made after checking reference annotations;

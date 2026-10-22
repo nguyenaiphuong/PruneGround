@@ -19,8 +19,9 @@ One Three.js canvas tells a two-step story:
    the same table. Orbit, zoom, top view and reset work throughout.
 2. **How PruneGround solves it:** inspect full mesh → pruned mesh →
    MCDR text → target availability. This continues in the same room with the
-   selected query: the authors' released TV output for A, or new Runpod
-   inference for the doorway query B. Two other released scenes remain
+   selected query: the authors' released TV output for A, or a compact
+   reference-based presentation crop for B with its saved MCDR output.
+   Two other released scenes remain
    available in the example selector and are explicitly marked as other rooms.
 
 The official examples do **not** include downstream predicted target boxes.
@@ -32,8 +33,9 @@ definition; only populate it with a real, aligned downstream result.
 
 Full PLYs, TV-query and other-room outputs originate from
 [`leduckhai/PruneGround`](https://github.com/leduckhai/PruneGround/tree/main/examples).
-The doorway variant in `assets/3d/scene0011_00/door/` was generated on an L40S
-using the unmodified public code, Qwen2.5-VL-7B and its full prompt. It retains
+The original doorway `pruned.ply` and `reformulation.json` in
+`assets/3d/scene0011_00/door/` were generated on an L40S using the unmodified
+public code, Qwen2.5-VL-7B and its full prompt. The original mesh retains
 all reference vertices of chair B **and chair A** and 35.4% of full-scene
 triangles. This is broad pruning, not completed grounding. Two short-prompt
 configurations failed to retain chair B completely; all attempts, raw outputs
@@ -41,6 +43,24 @@ and provenance are documented in [the inference record](assets/inference/README.
 This is one demo, not a reproduction of benchmark metrics. The browser loads
 saved assets; it never runs the model. Full-scene geometry is shared across
 query variants, with separate pruning/reformulation caches.
+
+The viewer now loads **`door/display-crop.ply`**, a manually specified 1 m × 1 m
+XY crop centered on the reference bounds of chair B. It retains all 3,356
+reference vertices of B, none of A, and 18,650 triangles. It is a presentation
+crop, not an improved inference result. The original model mesh and logs are
+unchanged. MCDR text still comes from the original wider inference region; it
+was not regenerated from the tighter crop. The collapsed data-sources panel
+records this distinction without adding a label over the scene.
+
+Regenerate or verify the presentation artifact with:
+
+```sh
+node scripts/build-display-crop.cjs
+node scripts/build-display-crop.cjs --check
+```
+
+`display-crop.json` records source/output hashes, construction, geometry counts
+and reference coverage. The generator writes only the separate display assets.
 
 MCDR statements are unedited model output and may contain errors. These scenes
 are not claimed to be the source scenes of paper Figures 1 and 3. The static
@@ -59,8 +79,9 @@ node scripts/build-reference-targets.cjs /path/to/scene0011_00.aggregation.json 
 The generator verifies vertex-count agreement and the nearest-chair relations
 against all annotated chairs. It applies the same ScanNet axis-alignment matrix
 as the viewer. The doorway description is authored for this demonstration.
-Reference labels were used only to validate outputs after inference, not as
-model input. Mesh statistics and source links are in the collapsed details panel.
+Reference labels were not provided to model inference. They are used for
+post-inference validation, object highlights and the separate presentation crop.
+Mesh statistics and source links are in the collapsed details panel.
 
 ## Viewer regression check
 

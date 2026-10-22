@@ -1,0 +1,37 @@
+{
+  "kind": "reference_based_presentation_crop",
+  "model_prediction": false,
+  "scene_id": "scene0011_00",
+  "reference_object_id": 9,
+  "construction": "XY crop around the reference chair bounds, 0.12 m context margin, minimum 1 m extent on each axis; retain full height and complete triangles.",
+  "xy_bounds": [
+    [
+      -0.7976194508373737,
+      0.20238054916262627
+    ],
+    [
+      1.4429072141647339,
+      2.442907214164734
+    ]
+  ],
+  "vertices": 9931,
+  "triangles": 18650,
+  "full_triangles": 451905,
+  "reference_coverage": {
+    "4": {
+      "retained": 0,
+      "total": 3781,
+      "fraction": 0
+    },
+    "9": {
+      "retained": 3356,
+      "total": 3356,
+      "fraction": 1
+    }
+  },
+  "full_mesh_sha256": "2941664625d52110aefbfb2b5fd3c869c3f51b999a036a27ba3e0033e3bf21f5",
+  "reference_sha256": "3e10308bfe115eecea5beac48b12bf9bc083aef7b09543bf63055b1099e70a59",
+  "display_mesh_sha256": "4dd4319214c261a31182565f59efa00086aece0d7b09c3355ba5924027d86b86",
+  "original_inference_mesh": "pruned.ply",
+  "reformulation_source": "Unchanged MCDR output from the original, wider 7B/full inference region; not regenerated from this presentation crop."
+}
