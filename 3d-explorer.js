@@ -4,6 +4,12 @@
 
   const SCENES = {
     scene0011_00: {
+      axisAlignment: [
+        -0.996195, 0.087156, 0, 3.881280,
+        -0.087156, -0.996195, 0, 4.119080,
+        0, 0, 1, -0.071016,
+        0, 0, 0, 1
+      ],
       query: 'This is a single chair nearest the TV',
       target: 'Target: chair',
       reformulation: [
@@ -16,6 +22,12 @@
       ]
     },
     scene0025_00: {
+      axisAlignment: [
+        0.707107, 0.707107, 0, -4.050430,
+        -0.707107, 0.707107, 0, -0.052607,
+        0, 0, 1, -0.049991,
+        0, 0, 0, 1
+      ],
       query: 'The sofa next to the door, closest to the cabinet',
       target: 'Target: sofa',
       reformulation: [
@@ -27,6 +39,12 @@
       ]
     },
     scene0050_01: {
+      axisAlignment: [
+        -0.061049, 0.998135, 0, -2.161000,
+        -0.998135, -0.061049, 0, 2.144810,
+        0, 0, 1, -0.153264,
+        0, 0, 0, 1
+      ],
       query: 'This is the big sofa chair near the large window',
       target: 'Target: sofa chair',
       reformulation: [
@@ -148,18 +166,22 @@
     prunedBounds = null;
   }
 
-  function prepareGeometry(geometry) {
+  function prepareGeometry(geometry, axisAlignment = null) {
+    if (axisAlignment) {
+      const matrix = new THREE.Matrix4().set(...axisAlignment);
+      geometry.applyMatrix4(matrix);
+    }
     if (!geometry.attributes.normal) geometry.computeVertexNormals();
     geometry.computeBoundingBox();
     geometry.computeBoundingSphere();
     return geometry;
   }
 
-  function loadPly(url, label, token) {
+  function loadPly(url, label, token, axisAlignment = null) {
     return new Promise((resolve, reject) => {
       loader.load(
         url,
-        (geometry) => resolve(prepareGeometry(geometry)),
+        (geometry) => resolve(prepareGeometry(geometry, axisAlignment)),
         (event) => {
           if (token !== loadToken || !progress) return;
           const amount = event.total ? `${Math.round((event.loaded / event.total) * 100)}%` : `${(event.loaded / 1048576).toFixed(1)} MB`;
@@ -251,8 +273,9 @@
 
     try {
       const root = `assets/3d/${id}`;
+      const axisAlignment = SCENES[id].axisAlignment;
       const [fullGeometry, prunedGeometry] = await Promise.all([
-        loadPly(`${root}/full.ply`, 'Full scene', token),
+        loadPly(`${root}/full.ply`, 'Full scene', token, axisAlignment),
         loadPly(`${root}/pruned.ply`, 'Pruned scene', token)
       ]);
 
