@@ -1,0 +1,9 @@
+{
+  "source": {"paper": "PruneGround: Plug-and-play Spatial Pruning for 3D Visual Grounding", "table": 6, "pdfPage": 8, "url": "https://arxiv.org/pdf/2606.31148#page=8", "localPdf": "PruneGround.pdf", "runtimeScope": "seconds per VLM stage, not end-to-end inference", "recallDefinition": "Percentage of samples retaining more than 75% of the target in the pruned region", "areaDefinition": "Percentage of the 512 by 512 top-view area retained", "uncertainty": "Not reported in Table 6"},
+  "models": [
+    {"id": "qwen3b", "name": "Qwen2.5-VL-3B-Instruct", "variant": "3B", "ours": true, "icon": "assets/images/model-icons/qwen.png", "color": "#a18acb", "runtime": 1.4, "recall": 94.7, "area": 15.1},
+    {"id": "chatgpt", "name": "ChatGPT-5", "variant": "5", "ours": false, "icon": "assets/images/model-icons/chatgpt.png", "color": "#268d7a", "runtime": 11.2, "recall": 95.3, "area": 11.7},
+    {"id": "qwen72b", "name": "Qwen2.5-VL-72B-Instruct", "variant": "72B", "ours": false, "icon": "assets/images/model-icons/qwen.png", "color": "#c88b37", "runtime": 12.6, "recall": 95.1, "area": 16.3},
+    {"id": "gemini", "name": "Gemini 3 Pro", "variant": "3 Pro", "ours": false, "icon": "assets/images/model-icons/gemini.png", "color": "#4c8bd8", "runtime": 13.1, "recall": 95.7, "area": 12.1}
+  ]
+}

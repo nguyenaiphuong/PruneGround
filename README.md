@@ -169,8 +169,10 @@ script to avoid software-WebGL contention during screenshots; run
 
 The page order is Motivation (Figure 1), the existing same-room 3D Explorer,
 Method (Figure 2 below its three cards), Results, Limitation, and Citation.
-The four headline metrics are separate raised cards with benchmark/threshold
-context. Results include all rows and columns of paper Tables 1–2, a concise
+The hero has three separate selling-point cards (#1 overall, 9/10 settings,
+and 9.4× per-stage speedup over Gemini 3 Pro with a 1.0-point target-recall gap).
+The 63.8% / 75.1% / 81.5% benchmark cards appear in Results with threshold context.
+Results include all rows and columns of paper Tables 1–2, a concise
 Insights box sourced from Tables 3–4, and the shared Qualitative Results deck.
 The failure-analysis link targets PDF page 25; its caption discusses relative
 language and propagation of ambiguity, not a measured new experiment.
@@ -186,7 +188,29 @@ node scripts/test-layout.cjs
 ```
 
 The browser check uses the same Playwright/local-server setup and also verifies
-all 204 accuracy cells, layout order, figure locations, supplied Scholar links,
+all 204 accuracy cells, layout order, figure locations, supplied author profile links,
 responsive containers and metric-card hover. `LAYOUT_URL` overrides the URL.
 `site-refinement.css` supplies larger presentation typography and locally hosted
 Space Grotesk, Inter and JetBrains Mono. Their OFL licenses are in `assets/fonts/`.
+
+## Table 6 speed–recall comparison
+
+`assets/table6-vlms.json` transcribes the four model rows from the bundled paper,
+page 8. `vlm-comparison.js` renders one measured point per model, with the user's
+unaltered uploaded brand icons, distinct colors and dashed reading guides. The
+user selected this speed–recall view rather than a line chart: Table 6 has no
+multi-point series from which to draw model curves. The recall axis explicitly
+spans 94–96%; runtime starts at zero and is seconds **per VLM stage**, not the
+full 4.1-second pipeline. The 9.4× card rounds 13.1 / 1.4, and the 1.0-point gap
+is 95.7 − 94.7. It is a target-recall comparison, not grounding accuracy.
+
+Hover/focus/tap reveals all three metrics, including top-view area retained.
+Model versions distinguish the two Qwen icons. A native details table preserves
+all 12 source numbers and works without JavaScript; it opens if chart loading
+fails. `node scripts/test-vlm-comparison.cjs` verifies numbers, keyboard/touch,
+four viewport sizes, marker counts, colors, and the source-table fallback.
+`VLM_URL` can point to a deployed page.
+
+The `ORAL EMNLP 2026` badge, author destinations and design credit are supplied
+by the site owner. The linked paper remains the arXiv PDF; citation metadata is
+not fabricated or replaced with an unprovided proceedings entry.

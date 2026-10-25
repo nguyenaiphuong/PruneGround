@@ -22,14 +22,23 @@ const shots = fs.mkdtempSync(path.join(os.tmpdir(), 'pruneground-layout-'));
     assert.match(await page.locator('#figure-2 figcaption').textContent(), /language-conditioned grounding on the pruned scene and reformulated description/);
     assert.deepEqual(await page.locator('#figure-2 figcaption .paper-prune, #figure-2 figcaption .paper-mcdr, #figure-2 figcaption .paper-ground').evaluateAll(es => es.map(e => getComputedStyle(e).color)), ['rgb(180, 114, 200)', 'rgb(230, 150, 190)', 'rgb(180, 114, 200)', 'rgb(225, 30, 86)', 'rgb(230, 150, 190)']);
     assert.equal(await page.locator('img[src*="pipeline-detail"], #analysis').count(), 0);
-    assert.equal(await page.locator('.metric-strip > article').count(), 4);
+    assert.equal(await page.locator('.hero .metric-strip > article').count(), 3);
+    assert.equal(await page.locator('.result-metrics > article').count(), 3);
+    assert.deepEqual(await page.locator('.hero .metric strong').allTextContents(), ['#1', '9/10', '9.4×']);
+    assert.deepEqual(await page.locator('.result-metrics strong').allTextContents(), ['63.8%', '75.1%', '81.5%']);
+    assert.equal((await page.locator('.eyebrow').textContent()).trim(), 'ORAL EMNLP 2026');
+    assert.equal(await page.locator('.formula').count(), 0);
+    assert.equal(await page.locator('.method-prune .step-tag').textContent(), 'Pruning');
+    assert.equal(await page.locator('.method-reform h3').textContent(), 'Multi-View-Conditioned Description Reformulation');
+    assert.equal(await page.locator('.citation-actions a').last().getAttribute('href'), 'https://arxiv.org/pdf/2606.31148');
+    assert.equal(await page.locator('.design-credit a').getAttribute('href'), 'https://github.com/nguyenaiphuong');
     assert.equal(await page.locator('#qual-title').textContent(), 'Qualitative Results');
     assert.match(await page.locator('.limitation-figure figcaption').textContent(), /Close to the TV/);
-    const scholar = await page.locator('.authors a').evaluateAll(es => es.map(e => new URL(e.href).searchParams.get('user')));
-    assert.deepEqual(scholar, ['4IAC5BMAAAAJ','DfAzEe0AAAAJ','_oARI30AAAAJ','JF4kESAAAAAJ','hFY4t8gAAAAJ','DZ-fHPgAAAAJ','Mdr6wjUAAAAJ']);
+    const profiles = await page.locator('.authors a').evaluateAll(es => es.map(e => e.href));
+    assert.deepEqual(profiles, ['https://caodinhduc.github.io/', 'https://github.com/leduckhai', 'https://www.fdraye.com/', 'https://sg.linkedin.com/in/chris-ngo-6ba2136', 'https://terry-zhang.notion.site/', 'https://is.mpg.de/en/people/bs', 'https://zhijing-jin.com/home/']);
     const fonts = await page.evaluate(() => ({families: [...document.fonts].filter(f => f.status === 'loaded').map(f => f.family),
       heading: getComputedStyle(document.querySelector('h1')).fontFamily, body: getComputedStyle(document.body).fontFamily,
-      mono: getComputedStyle(document.querySelector('.formula')).fontFamily}));
+      mono: getComputedStyle(document.querySelector('.table-meta')).fontFamily}));
     assert.match(fonts.heading, /Space Grotesk/);
     assert.match(fonts.body, /Inter/);
     assert.match(fonts.mono, /JetBrains Mono/);
@@ -45,12 +54,12 @@ const shots = fs.mkdtempSync(path.join(os.tmpdir(), 'pruneground-layout-'));
       await page.setViewportSize({width,height:1100});
       // Wait for responsive media queries after viewport changes and full-section captures.
       await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-      const overflow = await page.evaluate(() => [...document.querySelectorAll('main > section, .hero, .nav-shell, .metric, .method-card, .limitations, .qual-showcase')].filter(e => e.getBoundingClientRect().right > innerWidth+1 || (getComputedStyle(e).overflowX === 'visible' && e.scrollWidth > e.clientWidth+1)).map(e => e.id || e.className));
+      const overflow = await page.evaluate(() => [...document.querySelectorAll('main > section, .hero, .nav-shell, .metric, .method-card, .limitations, .qual-showcase, .footer-inner')].filter(e => e.getBoundingClientRect().right > innerWidth+1 || (getComputedStyle(e).overflowX === 'visible' && e.scrollWidth > e.clientWidth+1)).map(e => e.id || e.className));
       if (overflow.length) console.log(await page.evaluate(() => [...document.querySelectorAll('main *')].filter(e => !e.closest('.table-scroll, .qual-cases, pre') && e.getBoundingClientRect().right > innerWidth+1).map(e => [e.tagName, e.className, e.getBoundingClientRect().width, getComputedStyle(e).fontSize, e.textContent.slice(0,70)])));
       assert.deepEqual(overflow, [], `No container overflow at ${width}px: ${overflow}`);
       if (width === 1440 || width === 390) {
         await page.evaluate(() => { document.querySelector('.site-nav').style.visibility='hidden'; });
-        for (const selector of ['.hero','#overview','#method','.results-browser','#limitation']) {
+        for (const selector of ['.hero','#overview','#method','.result-metrics','.results-browser','#limitation','footer']) {
           await page.locator(selector).scrollIntoViewIfNeeded();
           await page.locator(selector).screenshot({path:path.join(shots,`${width}-${selector.replace(/[.#]/g,'')}.png`),animations:'disabled'});
         }
@@ -62,7 +71,7 @@ const shots = fs.mkdtempSync(path.join(os.tmpdir(), 'pruneground-layout-'));
     await page.locator('.metric').first().hover();
     await page.waitForFunction(() => getComputedStyle(document.querySelector('.metric')).transform === 'matrix(1, 0, 0, 1, 0, -6)');
     assert.deepEqual(errors, []);
-    console.log('Passed: layout, figure locations, all 204 accuracy cells, Scholar links, three loaded fonts, responsive containers and raised-card interaction.');
+    console.log('Passed: layout, figure locations, all 204 accuracy cells, author profiles, swapped metrics, conference badge, method copy, PDF/credit links, three fonts, responsive containers and raised cards.');
     console.log(`Screenshots: ${shots}`);
   } finally { await browser.close(); }
 })().catch(e => { console.error(e); process.exit(1); });

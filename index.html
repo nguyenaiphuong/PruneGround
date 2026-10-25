@@ -68,7 +68,9 @@
   <script src="qualitative-showcase.js?v=1" defer></script>
   <link rel="preload" href="assets/fonts/inter.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/space-grotesk.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="site-refinement.css?v=3">
+  <link rel="stylesheet" href="site-refinement.css?v=4">
+  <link rel="stylesheet" href="vlm-comparison.css?v=1">
+  <script src="vlm-comparison.js?v=1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -100,18 +102,18 @@
     <div class="hero-orb hero-orb-two" aria-hidden="true"></div>
     <div class="shell hero-shell">
       <div class="hero-copy reveal">
-        <p class="eyebrow"><span></span> arXiv 2026 · 3D Visual Grounding</p>
+        <p class="eyebrow"><span></span> ORAL EMNLP 2026</p>
         <h1><span class="prune-text">Prune</span><span class="ground-text">Ground</span><span class="title-colon">:</span><br>Plug-and-play Spatial Pruning for 3D Visual Grounding</h1>
         <p class="hero-lede">Reason over the <em>right region</em>, not the entire scene. PruneGround narrows the 3D search space, enriches the query with multi-view spatial cues, and grounds the target with a repurposed spatial LLM.</p>
 
         <div class="authors" aria-label="Authors">
-          <a href="https://scholar.google.com/citations?user=4IAC5BMAAAAJ&amp;hl=vi" target="_blank" rel="noopener">Duc Cao Dinh<sup>★ 1</sup></a>
-          <a href="https://scholar.google.com/citations?user=DfAzEe0AAAAJ&amp;hl=en" target="_blank" rel="noopener">Khai Le-Duc<sup>★ 1,2,3</sup></a>
-          <a href="https://scholar.google.com/citations?user=_oARI30AAAAJ&amp;hl=en" target="_blank" rel="noopener">Florent Draye<sup>4</sup></a>
-          <a href="https://scholar.google.com/citations?user=JF4kESAAAAAJ&amp;hl=en" target="_blank" rel="noopener">Chris Ngo<sup>1</sup></a>
-          <a href="https://scholar.google.com.tr/citations?user=hFY4t8gAAAAJ&amp;hl=vi" target="_blank" rel="noopener">Terry Jingchen Zhang<sup>3,6</sup></a>
-          <a href="https://scholar.google.com/citations?user=DZ-fHPgAAAAJ&amp;hl=en" target="_blank" rel="noopener">Bernhard Schölkopf<sup>4,5</sup></a>
-          <a href="https://scholar.google.com/citations?user=Mdr6wjUAAAAJ" target="_blank" rel="noopener">Zhijing Jin<sup>2,3,4</sup></a>
+          <a href="https://caodinhduc.github.io/" target="_blank" rel="noopener">Duc Cao Dinh<sup>★ 1</sup></a>
+          <a href="https://github.com/leduckhai" target="_blank" rel="noopener">Khai Le-Duc<sup>★ 1,2,3</sup></a>
+          <a href="https://www.fdraye.com/" target="_blank" rel="noopener">Florent Draye<sup>4</sup></a>
+          <a href="https://sg.linkedin.com/in/chris-ngo-6ba2136" target="_blank" rel="noopener">Chris Ngo<sup>1</sup></a>
+          <a href="https://terry-zhang.notion.site/" target="_blank" rel="noopener">Terry Jingchen Zhang<sup>3,6</sup></a>
+          <a href="https://is.mpg.de/en/people/bs" target="_blank" rel="noopener">Bernhard Schölkopf<sup>4,5</sup></a>
+          <a href="https://zhijing-jin.com/home/" target="_blank" rel="noopener">Zhijing Jin<sup>2,3,4</sup></a>
         </div>
         <p class="author-note"><span>★</span> Co-first authors</p>
 
@@ -128,7 +130,7 @@
         </details>
 
         <div class="hero-actions">
-          <a class="button button-primary" href="PruneGround.pdf" target="_blank" rel="noopener">
+          <a class="button button-primary" href="https://arxiv.org/pdf/2606.31148" target="_blank" rel="noopener">
             <span class="button-icon" aria-hidden="true">▤</span> Paper
           </a>
           <a class="button button-secondary" href="https://arxiv.org/abs/2606.31148" target="_blank" rel="noopener">arXiv <span aria-hidden="true">↗</span></a>
@@ -141,10 +143,9 @@
       </div>
 
       <div class="metric-strip" aria-label="Headline results">
-        <article class="metric reveal"><strong>63.8%</strong><p><b>ScanRefer overall accuracy</b> at IoU ≥ 0.25, up 2.8 percentage points over PanoGrounder.</p></article>
-        <article class="metric reveal" data-delay="70"><strong>75.1%</strong><p><b>Nr3D overall accuracy</b> at IoU ≥ 0.5 on human-written descriptions with same-class distractors.</p></article>
-        <article class="metric reveal" data-delay="140"><strong>81.5%</strong><p><b>Sr3D overall accuracy</b> at IoU ≥ 0.5 on descriptions that distinguish objects through spatial relations.</p></article>
-        <article class="metric reveal" data-delay="210"><strong>94.7%</strong><p><b>LGSP target recall</b> while retaining 15.1% of the top-view area with Qwen2.5-VL-3B.</p><small>Successful crop: &gt;75% of the target retained.</small></article>
+        <article class="metric reveal"><strong>#1</strong><p><b>Overall grounding accuracy</b> on ScanRefer, Nr3D and Sr3D among all methods compared in Tables 1–2.</p></article>
+        <article class="metric reveal" data-delay="70"><strong>9/10</strong><p><b>Leading evaluation settings</b> across Nr3D and Sr3D at IoU ≥ 0.5, covering easy/hard and viewpoint-dependent splits.</p></article>
+        <article class="metric reveal" data-delay="140"><strong>9.4×</strong><p><b>Faster per VLM stage than Gemini 3 Pro:</b> 1.4s vs. 13.1s, with just 1 percentage point lower target recall (94.7% vs. 95.7%).</p><small>Qwen2.5-VL-3B-Instruct · Table 6</small></article>
       </div>
     </div>
   </header>
@@ -298,10 +299,9 @@
 
         <div class="method-steps">
           <article class="method-card method-prune reveal">
-            <div class="step-top"><span class="step-index">01</span><span class="step-tag">Frozen VLM</span></div>
+            <div class="step-top"><span class="step-index">01</span><span class="step-tag">Pruning</span></div>
             <h3>Language-Guided<br>Spatial Pruning</h3>
             <p>LGSP renders one top view plus four oblique RGB-depth views. Conditioned on the query, a frozen VLM predicts a relevant 2D region that is projected back into the 3D point cloud.</p>
-            <div class="formula"><span>bbox</span><sup>2D</sup> = VLM(V<sub>global</sub>, Q)</div>
             <ul>
               <li>Removes language-irrelevant points</li>
               <li>Reduces same-class distractors</li>
@@ -311,9 +311,8 @@
 
           <article class="method-card method-reform reveal" data-delay="80">
             <div class="step-top"><span class="step-index">02</span><span class="step-tag">Multi-view</span></div>
-            <h3>Description<br>Reformulation</h3>
+            <h3>Multi-View-Conditioned Description Reformulation</h3>
             <p>MCDR uses local side views to split free-form language into compact target–anchor statements, then augments missing spatial cues visible in the scene.</p>
-            <div class="formula">(t, T, A, Ŝ) = VLM(V<sub>local</sub>, Q)</div>
             <ul>
               <li>Simplifies complex expressions</li>
               <li>Adds visually grounded anchors</li>
@@ -325,7 +324,6 @@
             <div class="step-top"><span class="step-index">03</span><span class="step-tag">Spatial LLM</span></div>
             <h3>LLM-based<br>Grounder</h3>
             <p>A detection-pretrained SpatialLM is repurposed for language-conditioned grounding. Point features and text tokens are jointly decoded into one target box.</p>
-            <div class="formula">&lt;c, p<sub>x</sub>, p<sub>y</sub>, p<sub>z</sub>, s<sub>x</sub>, s<sub>y</sub>, s<sub>z</sub>&gt;</div>
             <ul>
               <li>Sonata point-cloud encoder</li>
               <li>Qwen2.5-0.5B language decoder</li>
@@ -352,10 +350,10 @@
           <p>Complete comparisons from Tables 1 and 2 on ScanRefer, Nr3D, and Sr3D. PruneGround achieves the highest overall scores on all three benchmarks among the methods reported.</p>
         </div>
 
-        <div class="result-summary reveal">
-          <div><span class="rank">#1</span><p><b>Overall accuracy</b><br>on ScanRefer, Nr3D, and Sr3D</p></div>
-          <div><span class="rank">9/10</span><p><b>Nr3D + Sr3D</b><br>evaluation settings at Acc@0.5</p></div>
-          <div><span class="rank">+6.8</span><p><b>ScanRefer Overall</b><br>Acc@0.25 over PQ3D</p></div>
+        <div class="metric-strip result-metrics" aria-label="Benchmark accuracy">
+          <article class="metric reveal"><strong>63.8%</strong><p><b>ScanRefer overall accuracy</b> at IoU ≥ 0.25, up 2.8 percentage points over PanoGrounder.</p></article>
+          <article class="metric reveal" data-delay="70"><strong>75.1%</strong><p><b>Nr3D overall accuracy</b> at IoU ≥ 0.5 on human-written descriptions with same-class distractors.</p></article>
+          <article class="metric reveal" data-delay="140"><strong>81.5%</strong><p><b>Sr3D overall accuracy</b> at IoU ≥ 0.5 on descriptions that distinguish objects through spatial relations.</p></article>
         </div>
 
         <div class="results-browser reveal">
@@ -443,6 +441,29 @@
           </div>
         </div>
 
+        <section class="vlm-comparison reveal" id="vlm-comparison" aria-labelledby="vlm-title">
+          <div class="vlm-heading">
+            <div><p class="section-kicker">Table 6 · Accuracy–speed trade-off</p><h3 id="vlm-title">Small model.<br>Near-frontier target recall.</h3><p>Compare the frozen VLMs used in LGSP and MCDR.</p></div>
+            <div class="vlm-takeaway"><strong>9.4× <span>faster</span></strong><p>1.4s vs. 13.1s per VLM stage<br><b>−1.0 pp</b> recall vs. Gemini 3 Pro</p></div>
+          </div>
+          <div class="vlm-plot" id="vlm-plot" aria-busy="true"><p class="vlm-loading">Loading Table 6 comparison…</p><noscript><p>See the complete Table 6 values below.</p></noscript></div>
+          <div class="vlm-models" id="vlm-models" role="group" aria-label="Inspect a VLM"></div>
+          <div class="vlm-detail" id="vlm-detail" aria-live="polite" aria-atomic="true"></div>
+          <p class="vlm-note">One measured point per model; dashed lines are reading guides. Recall axis: 94–96%. Recall counts crops retaining &gt;75% of the target. Runtime is per VLM stage, not the 4.1s full pipeline.</p>
+          <details class="vlm-values">
+            <summary>View all Table 6 values</summary>
+            <div class="table-scroll" tabindex="0" role="region" aria-label="Table 6 VLM comparison; scroll horizontally for all columns">
+              <table><caption class="sr-only">Table 6: frozen VLM comparison on the pruning task.</caption><thead><tr><th scope="col">Frozen VLM</th><th scope="col">Area retained (%)</th><th scope="col">Target recall (%)</th><th scope="col">Runtime (s / stage)</th></tr></thead><tbody>
+                <tr><th scope="row">Gemini 3 Pro</th><td>12.1</td><td>95.7</td><td>13.1</td></tr>
+                <tr><th scope="row">ChatGPT-5</th><td>11.7</td><td>95.3</td><td>11.2</td></tr>
+                <tr><th scope="row">Qwen2.5-VL-72B-Instruct</th><td>16.3</td><td>95.1</td><td>12.6</td></tr>
+                <tr class="ours-row"><th scope="row">Qwen2.5-VL-3B-Instruct (Ours)</th><td>15.1</td><td>94.7</td><td>1.4</td></tr>
+              </tbody></table>
+            </div>
+          </details>
+          <a class="vlm-source" href="https://arxiv.org/pdf/2606.31148#page=8" target="_blank" rel="noopener">Source: paper Table 6 · 512 × 512 top-view area ↗</a>
+        </section>
+
         <aside class="results-insights reveal" aria-labelledby="insights-title">
           <p class="section-kicker">Insights</p>
           <h3 id="insights-title">Less ambiguity. More useful context.</h3>
@@ -515,7 +536,7 @@
           <p>If this work helps your research, please cite the arXiv paper and visit the official repository for code and models.</p>
           <div class="citation-actions">
             <a class="button button-primary" href="https://github.com/leduckhai/PruneGround" target="_blank" rel="noopener">View repository <span aria-hidden="true">↗</span></a>
-            <a class="button button-secondary" href="PruneGround.pdf" target="_blank" rel="noopener">Download PDF</a>
+            <a class="button button-secondary" href="https://arxiv.org/pdf/2606.31148" target="_blank" rel="noopener">Download PDF</a>
           </div>
         </div>
         <div class="bibtex-card reveal" data-delay="100">
@@ -541,7 +562,7 @@
         <img src="assets/images/icon.png" alt="" width="32" height="28">
         <span><b>Prune</b>Ground</span>
       </a>
-      <p>Plug-and-play Spatial Pruning for 3D Visual Grounding · arXiv:2606.31148</p>
+      <p>Plug-and-play Spatial Pruning for 3D Visual Grounding · arXiv:2606.31148<br><span class="design-credit">This graphic is designed by <a href="https://github.com/nguyenaiphuong" target="_blank" rel="noopener">cutie girl Bixe</a></span></p>
       <div><a href="https://arxiv.org/abs/2606.31148" target="_blank" rel="noopener">Paper</a><a href="https://github.com/leduckhai/PruneGround" target="_blank" rel="noopener">Code</a><a href="#citation">BibTeX</a></div>
     </div>
   </footer>
