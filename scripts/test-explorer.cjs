@@ -29,18 +29,24 @@ assert.ok(fs.readFileSync(path.join(runDir, 'mcdr.log'), 'utf8').includes(JSON.p
 const reviewed = {};
 for (const [query, variant, target] of [['tv', '', 4], ['door', '/door', 9]]) {
   const data = JSON.parse(fs.readFileSync(root + '/assets/3d/scene0011_00' + variant + '/display-description.json'));
-  assert.equal(data.source, 'editorial_visual_review');
+  assert.equal(data.source, 'user_supplied_description');
   assert.equal(data.model_generated, false);
   assert.equal(data.reference_target, target);
-  assert.match(data.description, /short end/);
-  assert.match(data.description, /long sides/);
+  assert.equal(data.target, 'chair');
+  assert.equal(data.description, undefined);
+  assert.equal(data.utterances.length, 2);
+  assert.equal(data.augmented_utterances.length, 2);
   assert.doesNotMatch(JSON.stringify(data), /cushioned|wooden floor|white wall|behind the TV/);
   reviewed[query] = data;
 }
-assert.notEqual(reviewed.tv.description, reviewed.door.description);
+assert.notDeepEqual(reviewed.tv.utterances, reviewed.door.utterances);
+assert.equal(reviewed.tv.augmented_target_properties.length, 2);
+assert.equal(reviewed.door.augmented_target_properties.length, 1);
 const checkDescription = async (page, query) => {
   const data = reviewed[query];
-  assert.equal(await page.locator('#pg-refined-description').textContent(), data.description);
+  assert.equal(await page.locator('#pg-refined-description').isVisible(), false);
+  assert.equal(await page.locator('#pg-target').textContent(), 'Target: chair');
+  assert.deepEqual(await page.locator('#pg-reformulation h5').allTextContents(), ['Target properties', 'Visual additions', 'Target–anchor relations', 'Additional relations']);
   assert.deepEqual(await page.locator('#pg-reformulation li').allTextContents(), [...data.target_properties, ...data.augmented_target_properties, ...data.utterances, ...data.augmented_utterances]);
   assert.equal(await page.locator('#pg-reformulation-label').textContent(), 'Spatial description');
   assert.doesNotMatch(await page.locator('#pg-reformulation-panel').textContent(), /saved model output|illustrative|cushioned|white wall|wooden floor|behind the TV/);
@@ -127,8 +133,14 @@ const checkDescription = async (page, query) => {
       await page.click('[data-pg-stage="' + stage + '"]');
       await frame(page);
       if (stage === 'reformulated') {
-        assert.equal(await page.locator('#pg-reformulation-label').textContent(), 'MCDR · saved model output');
+        assert.equal(await page.locator('#pg-reformulation-label').textContent(), id === 'scene0050_01' ? 'Spatial description' : 'MCDR · saved model output');
         assert.equal(await page.locator('#pg-refined-description').isVisible(), false);
+        if (id === 'scene0050_01') {
+          const original = JSON.parse(fs.readFileSync(root + '/assets/3d/scene0050_01/reformulation.json'));
+          const expected = [...original.target_properties, ...original.augmented_target_properties, ...original.utterances, ...original.augmented_utterances].map(line => line.replace('behind the black coffee table', 'behind the brown coffee table and near the piano chair'));
+          assert.deepEqual(await page.locator('#pg-reformulation li').allTextContents(), expected);
+          await page.locator('#pg-explorer').screenshot({path: shots + '/story-sofa-reformulated.png'});
+        }
       }
       if (stage === 'target') {
         assert.equal(await page.locator('#pg-stage-badge').textContent(), 'Prediction not released');
@@ -164,7 +176,7 @@ const checkDescription = async (page, query) => {
   assert.equal(await page.locator('.chair-door.selected').count(), 1);
   assert.equal(fullRequests.length, 1, 'Both query variants must share the full room download');
   assert.ok(doorRequests.some(url => url.endsWith('/display-crop.ply')));
-  assert.ok(doorRequests.some(url => url.endsWith('/display-description.json?v=visual-context-1')));
+  assert.ok(doorRequests.some(url => url.endsWith('/display-description.json?v=20261025-format1')));
   assert.ok(!doorRequests.some(url => url.includes('/reformulation.json')), 'Raw model output must remain archived, not used as the edited description');
   assert.ok(!doorRequests.some(url => url.endsWith('/pruned.ply')), 'The wider original inference is archived, not displayed');
   await page.click('.mesh-details summary');

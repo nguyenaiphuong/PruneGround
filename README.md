@@ -20,7 +20,7 @@ One Three.js canvas tells a two-step story:
 2. **How PruneGround solves it:** inspect full mesh → pruned mesh →
    refined description → target availability. This continues in the same room with the
    selected query: the authors' released TV output for A, or a compact
-   reference-based presentation crop for B. Both chairs use visually reviewed
+   reference-based presentation crop for B. Both chairs use user-supplied
    descriptions with full-room spatial context (see below).
    Two other released scenes remain
    available in the example selector and are explicitly marked as other rooms.
@@ -68,18 +68,18 @@ node scripts/build-display-crop.cjs --check
 and reference coverage. The generator writes only the separate display assets.
 
 For chair A and B, the viewer loads separate **`display-description.json`** files
-instead of the original `reformulation.json` files. These are editorial visual
-descriptions, not Qwen output or a new MCDR run. They were reviewed against all
-four full-room side views, the top view, local X/Y renders and reference targets.
-Both describe the brown seat/back and dark slender frame without guessing
-materials or upholstery. The distinguishing cues are the two short ends of the
-long table: A lies between table and TV; B lies between table and doorway at the
-opposite end. Neither is in the rows along the long sides. Full-room relations
-are not claimed to be visible in the isolated crops. The UI uses neutral
-“Spatial description” wording, with provenance in collapsed data sources only.
+instead of the original `reformulation.json` files. As of 2026-10-25 these contain
+the user's exact replacement wording, not Qwen output or a new MCDR run. The UI
+restores four groups: Target properties, Visual additions, Target–anchor relations,
+and Additional relations, with `Target: chair` and no narrative summary.
+The sofa-chair scene (`scene0050_01`) also uses a separate display file: only
+“behind the black coffee table” changes to “behind the brown coffee table and
+near the piano chair”; all other statements are retained. These user-authored
+changes are not claimed as independently validated model results. The UI uses
+neutral “Spatial description” wording, with provenance in collapsed data sources only.
 Original A/B model JSON, logs, images and hashes are unchanged.
 
-Other scenes' MCDR statements remain unedited model output and may contain errors. These scenes
+The sofa-by-door scene's MCDR statements remain unedited model output and may contain errors. These scenes
 are not claimed to be the source scenes of paper Figures 1 and 3. The static
 Figure 1 illustration has been removed from the page.
 
