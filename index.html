@@ -64,6 +64,8 @@
   <script src="assets/vendor/three-r128/OrbitControls.js" defer></script>
   <script src="script.js?v=20261022" defer></script>
   <script src="3d-explorer.js?v=20261025-format1" defer></script>
+  <link rel="stylesheet" href="qualitative-showcase.css?v=1">
+  <script src="qualitative-showcase.js?v=1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -407,13 +409,40 @@
           </div>
         </div>
 
-        <figure class="paper-figure reveal">
-          <button class="figure-button" type="button" data-lightbox="assets/images/qualitative.png" aria-label="Open qualitative PruneGround results">
-            <img src="assets/images/qualitative.png" alt="Qualitative PruneGround examples showing original descriptions, input and pruned scenes, reformulated descriptions, predictions, and ground truth" loading="lazy" width="3126" height="1798">
-            <span class="expand-hint">Expand figure <span aria-hidden="true">↗</span></span>
-          </button>
-          <figcaption><b>Qualitative results.</b> MCDR simplifies the original query and introduces visually grounded relations before final localization.</figcaption>
-        </figure>
+        <section class="qual-showcase" id="qualitative" aria-labelledby="qual-title" tabindex="0" aria-describedby="qual-keyboard-hint">
+          <div class="qual-heading">
+            <div><p class="section-kicker">A closer look · Three cases</p><h3 id="qual-title">Interactive Qualitative Results</h3><p>Follow the language. Focus the scene. Find the target.</p></div>
+            <button class="qual-source" type="button" data-lightbox="assets/images/qualitative.png" aria-haspopup="dialog">View full paper figure <span aria-hidden="true">↗</span></button>
+          </div>
+          <div class="qual-cases" role="group" aria-label="Choose a qualitative case">
+            <button class="qual-case" type="button" data-qual-case="chair" aria-pressed="true" aria-controls="qual-stage">
+              <span class="qual-case-number">01</span><span><strong>Chair: Spatial Relations</strong><small>Understanding spatial relationships</small></span>
+              <img src="assets/images/qualitative/chair-pruned.png" alt="" width="440" height="480" loading="lazy">
+            </button>
+            <button class="qual-case" type="button" data-qual-case="desk" aria-pressed="false" aria-controls="qual-stage">
+              <span class="qual-case-number">02</span><span><strong>Desk: Visual Attribute Enrichment</strong><small>Adding discriminative visual details</small></span>
+              <img src="assets/images/qualitative/desk-pruned.png" alt="" width="440" height="550" loading="lazy">
+            </button>
+            <button class="qual-case" type="button" data-qual-case="cabinet" aria-pressed="false" aria-controls="qual-stage">
+              <span class="qual-case-number">03</span><span><strong>Kitchen Cabinet: Anchor-Based Grounding</strong><small>Grounding through object relationships</small></span>
+              <img src="assets/images/qualitative/cabinet-pruned.png" alt="" width="440" height="475" loading="lazy">
+            </button>
+          </div>
+          <div class="qual-deck">
+            <div class="qual-stage-bar"><span id="qual-case-label">Chair · Spatial Relations</span><span id="qual-stage-label">01 / 04 · Original Scene</span></div>
+            <div id="qual-stage" class="qual-stage" aria-label="Qualitative presentation">
+              <noscript><p>Enable JavaScript for the four-stage presentation, or <a href="assets/images/qualitative.png">view the original figure</a>.</p></noscript>
+            </div>
+            <nav class="qual-progress" aria-label="Presentation stages">
+              <button type="button" data-qual-stage="0" aria-current="step" aria-controls="qual-stage"><span>01</span> Original</button>
+              <button type="button" data-qual-stage="1" aria-controls="qual-stage"><span>02</span> Pruning</button>
+              <button type="button" data-qual-stage="2" aria-controls="qual-stage"><span>03</span> MCDR</button>
+              <button type="button" data-qual-stage="3" aria-controls="qual-stage"><span>04</span> Grounding</button>
+            </nav>
+            <div class="qual-controls"><button id="qual-prev" type="button" disabled>← Previous</button><p id="qual-keyboard-hint">Click or tap images to enlarge <span>· Use ← → when focused</span></p><button id="qual-next" type="button">Next →</button></div>
+          </div>
+          <p class="sr-only" id="qual-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        </section>
       </div>
     </section>
 

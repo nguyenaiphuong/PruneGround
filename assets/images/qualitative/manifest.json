@@ -1,0 +1,139 @@
+{
+  "source": "../qualitative.png",
+  "source_sha256": "e3a83b00cf47aef21d3234928233adc23604ce6ea375da306d4fc47cce49b6d9",
+  "operation": "Lossless rectangular crops only; original pixels, geometry and box colors unchanged.",
+  "panels": {
+    "chair-full.png": {
+      "crop_xyxy": [
+        420,
+        0,
+        980,
+        480
+      ],
+      "width": 560,
+      "height": 480,
+      "sha256": "e07379bb604c841f6c63aebbe06de28812a216c4ca4b58266eb213be89768139"
+    },
+    "chair-pruned.png": {
+      "crop_xyxy": [
+        1020,
+        0,
+        1460,
+        480
+      ],
+      "width": 440,
+      "height": 480,
+      "sha256": "cabc0a4cb629f9a1e0a6c2b7bc4e90f737756d949c14562c80cef5af4a4c0d2d"
+    },
+    "chair-prediction.png": {
+      "crop_xyxy": [
+        2070,
+        0,
+        2540,
+        480
+      ],
+      "width": 470,
+      "height": 480,
+      "sha256": "ad8eb015488f4c9c004f2ca8fa4348b83d68348dc289a74fcf62409e66cc9cde"
+    },
+    "chair-ground-truth.png": {
+      "crop_xyxy": [
+        2570,
+        0,
+        3126,
+        480
+      ],
+      "width": 556,
+      "height": 480,
+      "sha256": "421595f36ef2ee23fb289c0138357d6cc5da27166c3fa6aaddf5f33d47d3fe0a"
+    },
+    "desk-full.png": {
+      "crop_xyxy": [
+        420,
+        520,
+        980,
+        1070
+      ],
+      "width": 560,
+      "height": 550,
+      "sha256": "7beb69d4d12d5bc0477266c0071c189a8d2e31ea529f77d99b909c8b86891451"
+    },
+    "desk-pruned.png": {
+      "crop_xyxy": [
+        1020,
+        520,
+        1460,
+        1070
+      ],
+      "width": 440,
+      "height": 550,
+      "sha256": "f550191ceab2f4f5e45649ee81845343886639ef0bfb46b055b55ac9d3eb3e57"
+    },
+    "desk-prediction.png": {
+      "crop_xyxy": [
+        2070,
+        520,
+        2540,
+        1070
+      ],
+      "width": 470,
+      "height": 550,
+      "sha256": "5714078c06ce78943b2ab36261d8125a0413fe717b483a87f7e660030049621f"
+    },
+    "desk-ground-truth.png": {
+      "crop_xyxy": [
+        2570,
+        520,
+        3126,
+        1070
+      ],
+      "width": 556,
+      "height": 550,
+      "sha256": "fd1274b99d7e6f4ae86610b69051008ed998297d134d705541dc549c049e4c59"
+    },
+    "cabinet-full.png": {
+      "crop_xyxy": [
+        420,
+        1120,
+        980,
+        1595
+      ],
+      "width": 560,
+      "height": 475,
+      "sha256": "a732022ede8713e6d5697430b274757305204d54bf2df97b092baf599d2b9fa9"
+    },
+    "cabinet-pruned.png": {
+      "crop_xyxy": [
+        1020,
+        1120,
+        1460,
+        1595
+      ],
+      "width": 440,
+      "height": 475,
+      "sha256": "8ef1d5da657a946161e68b0e6369cef2c8e082298b45357ce8cea1a61acf339e"
+    },
+    "cabinet-prediction.png": {
+      "crop_xyxy": [
+        2070,
+        1120,
+        2540,
+        1595
+      ],
+      "width": 470,
+      "height": 475,
+      "sha256": "9e6438a77179ed58068291657d8f39a271b8ac7b4fe0e2c3f36a6d750c3b89ff"
+    },
+    "cabinet-ground-truth.png": {
+      "crop_xyxy": [
+        2570,
+        1120,
+        3126,
+        1595
+      ],
+      "width": 556,
+      "height": 475,
+      "sha256": "2720231f4e613385006b59b97b107ef1fb7cbd8787e1464729e51f97f8d2c0e4"
+    }
+  }
+}

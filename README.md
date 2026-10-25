@@ -109,3 +109,40 @@ a deployed copy. The test checks both query-specific meshes and reference target
 the reviewed A/B descriptions and preserved raw inference hashes, one shared full-room download, rapid query
 changes, other scenes, orbit/top view, keyboard controls and mobile overflow.
 Screenshots are saved to a temporary directory reported by the test.
+
+## Interactive Qualitative Results
+
+The Results section replaces the static qualitative figure with a single shared
+four-stage presentation (`qualitative-showcase.js` / `.css`). Three case cards
+select Chair, Desk or Kitchen Cabinet. Stages are original scene, LGSP, MCDR and
+final grounding. Switching cases resets to the original scene. Next/Previous,
+clickable stages and scoped arrow/Home/End keys control progress; no autoplay.
+Next on the final stage moves to the next case. Reduced-motion preferences
+disable fades, the pruning crossfade and sequential bullet reveals.
+
+All 12 raster panels are **lossless rectangular crops** of the supplied
+`assets/images/qualitative.png` (identical to the user's attachment). No geometry,
+pruning masks or bounding boxes were generated. Predictions remain orange;
+ground truth remains green. A full-figure button and individual image enlargement
+use the existing modal. This feature creates no canvas or additional 3D viewer.
+Original queries and reformulations are transcribed as live HTML text. Purple
+marks preserved/restructured statements and green marks additions. The original
+query remains beside MCDR, with explicit comparison notes for the chair's omitted
+“brown” attribute and desk's omitted “bigger one” comparison. No metrics are added.
+
+`assets/images/qualitative/manifest.json` records crop rectangles and source/output
+hashes. Regenerate and verify the pixel-exact panels (requires Pillow):
+
+```sh
+python3 scripts/extract-qualitative.py
+python3 scripts/extract-qualitative.py --check
+```
+
+With the same local server and Playwright installation as above, run
+`node scripts/test-qualitative.cjs`. It checks all 12 combinations at desktop,
+tablet and mobile widths, exact statements/colors, image loading, stable stage
+heights, scoped keyboard controls, rapid changes, reduced motion, modal access
+and creation of no new canvas. This focused test skips the offscreen Explorer
+script to avoid software-WebGL contention during screenshots; run
+`test-explorer.cjs` as well for the existing 3D integration check.
+`QUALITATIVE_URL` can point to the deployed page.
