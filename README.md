@@ -81,7 +81,7 @@ Original A/B model JSON, logs, images and hashes are unchanged.
 
 The sofa-by-door scene's MCDR statements remain unedited model output and may contain errors. These scenes
 are not claimed to be the source scenes of paper Figures 1 and 3. The static
-Figure 1 illustration has been removed from the page.
+Figure 1 illustration appears in Motivation, before the separate same-room Explorer.
 
 Reference annotations come from the ScanNet `aggregation.json` and
 `_vh_clean_2.0.010000.segs.json` files, accessed via this
@@ -146,3 +146,29 @@ and creation of no new canvas. This focused test skips the offscreen Explorer
 script to avoid software-WebGL contention during screenshots; run
 `test-explorer.cjs` as well for the existing 3D integration check.
 `QUALITATIVE_URL` can point to the deployed page.
+
+## Presentation layout and benchmark tables
+
+The page order is Motivation (Figure 1), the existing same-room 3D Explorer,
+Method (Figure 2 below its three cards), Results, Limitation, and Citation.
+The four headline metrics are separate raised cards with benchmark/threshold
+context. Results include all rows and columns of paper Tables 1–2, a concise
+Insights box sourced from Tables 3–4, and the shared Qualitative Results deck.
+The failure-analysis link targets PDF page 25; its caption discusses relative
+language and propagation of ambiguity, not a measured new experiment.
+
+`assets/benchmark-tables.json` transcribes Tables 1–2 from the bundled PDF, page 7.
+Missing values stay null / “—”, never zero. Venue names follow each source table
+(including PQ3D's different venue labels across Tables 1 and 2). Static HTML
+keeps all data accessible without JavaScript. Validate the generated tables with:
+
+```sh
+node scripts/build-benchmark-tables.cjs --check
+node scripts/test-layout.cjs
+```
+
+The browser check uses the same Playwright/local-server setup and also verifies
+all 204 accuracy cells, layout order, figure locations, supplied Scholar links,
+responsive containers and metric-card hover. `LAYOUT_URL` overrides the URL.
+`site-refinement.css` supplies larger presentation typography and locally hosted
+Space Grotesk, Inter and JetBrains Mono. Their OFL licenses are in `assets/fonts/`.

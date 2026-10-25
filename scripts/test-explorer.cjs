@@ -70,7 +70,7 @@ const checkDescription = async (page, query) => {
   await ready();
   await page.locator('#pg-explorer').scrollIntoViewIfNeeded();
   assert.equal(await page.locator('canvas').count(), 1);
-  assert.equal(await page.locator('img[src="assets/images/intuition.png"]').count(), 0);
+  assert.equal(await page.locator('#overview #figure-1 img[src="assets/images/intuition.png"]').count(), 1);
   assert.equal(await page.locator('.mesh-details').getAttribute('open'), null);
   assert.equal(await page.locator('#pg-full-faces').textContent(), '451,905');
   assert.equal(await page.locator('#pg-pruned-faces').textContent(), '11,597');

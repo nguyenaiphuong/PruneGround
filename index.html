@@ -63,9 +63,12 @@
   <script src="assets/vendor/three-r128/PLYLoader.js" defer></script>
   <script src="assets/vendor/three-r128/OrbitControls.js" defer></script>
   <script src="script.js?v=20261022" defer></script>
-  <script src="3d-explorer.js?v=20261025-format1" defer></script>
+  <script src="3d-explorer.js?v=20261025-layout2" defer></script>
   <link rel="stylesheet" href="qualitative-showcase.css?v=1">
   <script src="qualitative-showcase.js?v=1" defer></script>
+  <link rel="preload" href="assets/fonts/inter.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/space-grotesk.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="site-refinement.css?v=1">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -82,10 +85,10 @@
       </button>
       <div class="nav-links" id="nav-links">
         <a href="#overview">Overview</a>
-        <a href="#method">Method</a>
         <a href="#explorer">3D Explorer</a>
+        <a href="#method">Method</a>
         <a href="#results">Results</a>
-        <a href="#analysis">Analysis</a>
+        <a href="#limitation">Limitation</a>
         <a href="#citation">Citation</a>
         <a class="nav-paper" href="https://arxiv.org/abs/2606.31148" target="_blank" rel="noopener">Read paper <span aria-hidden="true">↗</span></a>
       </div>
@@ -102,13 +105,13 @@
         <p class="hero-lede">Reason over the <em>right region</em>, not the entire scene. PruneGround narrows the 3D search space, enriches the query with multi-view spatial cues, and grounds the target with a repurposed spatial LLM.</p>
 
         <div class="authors" aria-label="Authors">
-          <span>Duc Cao Dinh<sup>★ 1</sup></span>
-          <span>Khai Le-Duc<sup>★ 1,2,3</sup></span>
-          <span>Florent Draye<sup>4</sup></span>
-          <span>Chris Ngo<sup>1</sup></span>
-          <span>Terry Jingchen Zhang<sup>3,6</sup></span>
-          <span>Bernhard Schölkopf<sup>4,5</sup></span>
-          <span>Zhijing Jin<sup>2,3,4</sup></span>
+          <a href="https://scholar.google.com/citations?user=4IAC5BMAAAAJ&amp;hl=vi" target="_blank" rel="noopener">Duc Cao Dinh<sup>★ 1</sup></a>
+          <a href="https://scholar.google.com/citations?user=DfAzEe0AAAAJ&amp;hl=en" target="_blank" rel="noopener">Khai Le-Duc<sup>★ 1,2,3</sup></a>
+          <a href="https://scholar.google.com/citations?user=_oARI30AAAAJ&amp;hl=en" target="_blank" rel="noopener">Florent Draye<sup>4</sup></a>
+          <a href="https://scholar.google.com/citations?user=JF4kESAAAAAJ&amp;hl=en" target="_blank" rel="noopener">Chris Ngo<sup>1</sup></a>
+          <a href="https://scholar.google.com.tr/citations?user=hFY4t8gAAAAJ&amp;hl=vi" target="_blank" rel="noopener">Terry Jingchen Zhang<sup>3,6</sup></a>
+          <a href="https://scholar.google.com/citations?user=DZ-fHPgAAAAJ&amp;hl=en" target="_blank" rel="noopener">Bernhard Schölkopf<sup>4,5</sup></a>
+          <a href="https://scholar.google.com/citations?user=Mdr6wjUAAAAJ" target="_blank" rel="noopener">Zhijing Jin<sup>2,3,4</sup></a>
         </div>
         <p class="author-note"><span>★</span> Co-first authors</p>
 
@@ -137,19 +140,11 @@
         </div>
       </div>
 
-      <figure class="hero-figure reveal" data-delay="120">
-        <button class="figure-button" type="button" data-lightbox="assets/images/pipeline.png" aria-label="Open the PruneGround pipeline figure">
-          <img src="assets/images/pipeline.png" alt="PruneGround pipeline: language-guided spatial pruning, multi-view-conditioned description reformulation, and LLM-based grounding" width="2042" height="950">
-          <span class="expand-hint">Expand figure <span aria-hidden="true">↗</span></span>
-        </button>
-        <figcaption><b>Prune → reformulate → ground.</b> The full three-stage PruneGround pipeline.</figcaption>
-      </figure>
-
-      <div class="metric-strip reveal" data-delay="180" aria-label="Headline results">
-        <div class="metric"><strong>63.8</strong><span>ScanRefer<br>Acc@0.25 overall</span></div>
-        <div class="metric"><strong>75.1</strong><span>Nr3D<br>overall accuracy</span></div>
-        <div class="metric"><strong>81.5</strong><span>Sr3D<br>overall accuracy</span></div>
-        <div class="metric"><strong>94.7%</strong><span>LGSP<br>target recall</span></div>
+      <div class="metric-strip" aria-label="Headline results">
+        <article class="metric reveal"><strong>63.8%</strong><p><b>ScanRefer overall accuracy</b> at IoU ≥ 0.25, up 2.8 percentage points over PanoGrounder.</p></article>
+        <article class="metric reveal" data-delay="70"><strong>75.1%</strong><p><b>Nr3D overall accuracy</b> at IoU ≥ 0.5 on human-written descriptions with same-class distractors.</p></article>
+        <article class="metric reveal" data-delay="140"><strong>81.5%</strong><p><b>Sr3D overall accuracy</b> at IoU ≥ 0.5 on descriptions that distinguish objects through spatial relations.</p></article>
+        <article class="metric reveal" data-delay="210"><strong>94.7%</strong><p><b>LGSP target recall</b> while retaining 15.1% of the top-view area with Qwen2.5-VL-3B.</p><small>Successful crop: &gt;75% of the target retained.</small></article>
       </div>
     </div>
   </header>
@@ -188,71 +183,23 @@
           </article>
         </div>
 
-      </div>
-    </section>
-
-    <section class="section method-section" id="method">
-      <div class="shell">
-        <div class="section-heading light reveal">
-          <p class="section-kicker">02 · Method</p>
-          <h2>Three stages.<br><span>One focused search.</span></h2>
-          <p>The framework progressively reduces spatial noise and improves language structure before predicting the target 3D bounding box.</p>
-        </div>
-
-        <div class="method-steps">
-          <article class="method-card method-prune reveal">
-            <div class="step-top"><span class="step-index">01</span><span class="step-tag">Frozen VLM</span></div>
-            <h3>Language-Guided<br>Spatial Pruning</h3>
-            <p>LGSP renders one top view plus four oblique RGB-depth views. Conditioned on the query, a frozen VLM predicts a relevant 2D region that is projected back into the 3D point cloud.</p>
-            <div class="formula"><span>bbox</span><sup>2D</sup> = VLM(V<sub>global</sub>, Q)</div>
-            <ul>
-              <li>Removes language-irrelevant points</li>
-              <li>Reduces same-class distractors</li>
-              <li>Retains full height along the z-axis</li>
-            </ul>
-          </article>
-
-          <article class="method-card method-reform reveal" data-delay="80">
-            <div class="step-top"><span class="step-index">02</span><span class="step-tag">Multi-view</span></div>
-            <h3>Description<br>Reformulation</h3>
-            <p>MCDR uses local side views to split free-form language into compact target–anchor statements, then augments missing spatial cues visible in the scene.</p>
-            <div class="formula">(t, T, A, Ŝ) = VLM(V<sub>local</sub>, Q)</div>
-            <ul>
-              <li>Simplifies complex expressions</li>
-              <li>Adds visually grounded anchors</li>
-              <li>Encodes explicit spatial relations</li>
-            </ul>
-          </article>
-
-          <article class="method-card method-ground reveal" data-delay="160">
-            <div class="step-top"><span class="step-index">03</span><span class="step-tag">Spatial LLM</span></div>
-            <h3>LLM-based<br>Grounder</h3>
-            <p>A detection-pretrained SpatialLM is repurposed for language-conditioned grounding. Point features and text tokens are jointly decoded into one target box.</p>
-            <div class="formula">&lt;c, p<sub>x</sub>, p<sub>y</sub>, p<sub>z</sub>, s<sub>x</sub>, s<sub>y</sub>, s<sub>z</sub>&gt;</div>
-            <ul>
-              <li>Sonata point-cloud encoder</li>
-              <li>Qwen2.5-0.5B language decoder</li>
-              <li>Single target-selective prediction</li>
-            </ul>
-          </article>
-        </div>
-
-        <figure class="paper-figure dark-figure reveal">
-          <button class="figure-button" type="button" data-lightbox="assets/images/pipeline-detail.png" aria-label="Open a detailed PruneGround example">
-            <img src="assets/images/pipeline-detail.png" alt="Detailed PruneGround example from input description through global views, pruning, reformulation, and final grounding" loading="lazy" width="2758" height="1838">
+        <figure class="paper-figure reveal" id="figure-1">
+          <button class="figure-button" type="button" data-lightbox="assets/images/intuition.png" aria-label="Open Figure 1: spatial relationships distinguish similar chairs">
+            <img src="assets/images/intuition.png" alt="Side and top views of one room: the chair near the door and the chair under the board are different targets" loading="lazy" width="1630" height="788">
             <span class="expand-hint">Expand figure <span aria-hidden="true">↗</span></span>
           </button>
-          <figcaption><b>End-to-end example.</b> Global views guide pruning; local views guide reformulation; the spatial LLM predicts the target box.</figcaption>
+          <figcaption><b>Figure 1 — Same objects, different spatial relationships.</b> Anchors such as the door and board distinguish similar chairs. PruneGround uses these relations to focus on the relevant neighborhood instead of reasoning over every same-class candidate.</figcaption>
         </figure>
+
       </div>
     </section>
 
     <section class="section explorer-section" id="explorer">
       <div class="shell">
         <div class="section-heading reveal">
-          <p class="section-kicker">03 · Interactive Explorer</p>
+          <p class="section-kicker">02 · Interactive Explorer</p>
           <h2>Same room.<br><span>Language changes the target.</span></h2>
-          <p>First, see why spatial relationships matter. Then explore the selected chair, its local region and a refined description in the same room.</p>
+          <p>When several chairs look alike, their relationships to the TV, doorway and table distinguish the target. Compare two descriptions in one room to see why PruneGround uses spatial context to narrow the search.</p>
         </div>
 
         <div class="explorer-card reveal" id="pg-explorer">
@@ -341,16 +288,72 @@
       </div>
     </section>
 
+    <section class="section method-section" id="method">
+      <div class="shell">
+        <div class="section-heading light reveal">
+          <p class="section-kicker">03 · Method</p>
+          <h2>Three stages.<br><span>One focused search.</span></h2>
+          <p>The framework progressively reduces spatial noise and improves language structure before predicting the target 3D bounding box.</p>
+        </div>
+
+        <div class="method-steps">
+          <article class="method-card method-prune reveal">
+            <div class="step-top"><span class="step-index">01</span><span class="step-tag">Frozen VLM</span></div>
+            <h3>Language-Guided<br>Spatial Pruning</h3>
+            <p>LGSP renders one top view plus four oblique RGB-depth views. Conditioned on the query, a frozen VLM predicts a relevant 2D region that is projected back into the 3D point cloud.</p>
+            <div class="formula"><span>bbox</span><sup>2D</sup> = VLM(V<sub>global</sub>, Q)</div>
+            <ul>
+              <li>Removes language-irrelevant points</li>
+              <li>Reduces same-class distractors</li>
+              <li>Retains full height along the z-axis</li>
+            </ul>
+          </article>
+
+          <article class="method-card method-reform reveal" data-delay="80">
+            <div class="step-top"><span class="step-index">02</span><span class="step-tag">Multi-view</span></div>
+            <h3>Description<br>Reformulation</h3>
+            <p>MCDR uses local side views to split free-form language into compact target–anchor statements, then augments missing spatial cues visible in the scene.</p>
+            <div class="formula">(t, T, A, Ŝ) = VLM(V<sub>local</sub>, Q)</div>
+            <ul>
+              <li>Simplifies complex expressions</li>
+              <li>Adds visually grounded anchors</li>
+              <li>Encodes explicit spatial relations</li>
+            </ul>
+          </article>
+
+          <article class="method-card method-ground reveal" data-delay="160">
+            <div class="step-top"><span class="step-index">03</span><span class="step-tag">Spatial LLM</span></div>
+            <h3>LLM-based<br>Grounder</h3>
+            <p>A detection-pretrained SpatialLM is repurposed for language-conditioned grounding. Point features and text tokens are jointly decoded into one target box.</p>
+            <div class="formula">&lt;c, p<sub>x</sub>, p<sub>y</sub>, p<sub>z</sub>, s<sub>x</sub>, s<sub>y</sub>, s<sub>z</sub>&gt;</div>
+            <ul>
+              <li>Sonata point-cloud encoder</li>
+              <li>Qwen2.5-0.5B language decoder</li>
+              <li>Single target-selective prediction</li>
+            </ul>
+          </article>
+        </div>
+
+        <figure class="paper-figure dark-figure reveal" id="figure-2">
+          <button class="figure-button" type="button" data-lightbox="assets/images/pipeline.png" aria-label="Open Figure 2: the PruneGround pipeline">
+            <img src="assets/images/pipeline.png" alt="PruneGround pipeline: language-guided spatial pruning, multi-view-conditioned description reformulation, and LLM-based grounding" loading="lazy" width="2042" height="950">
+            <span class="expand-hint">Expand figure <span aria-hidden="true">↗</span></span>
+          </button>
+          <figcaption><b>Figure 2 — Prune → reformulate → ground.</b> The full three-stage PruneGround pipeline: LGSP removes irrelevant regions, MCDR restructures and enriches the description, and LLM-Grounder predicts the target in the pruned scene.</figcaption>
+        </figure>
+      </div>
+    </section>
+
     <section class="section results-section" id="results">
       <div class="shell">
         <div class="section-heading reveal">
           <p class="section-kicker">04 · Results</p>
-          <h2>State of the art across<br><span>three 3DVG benchmarks.</span></h2>
-          <p>PruneGround is evaluated on ScanRefer, Nr3D, and Sr3D. The paper reports best results in all three ScanRefer settings and 9 of 10 Nr3D/Sr3D settings.</p>
+          <h2>Grounding accuracy across<br><span>three 3DVG benchmarks.</span></h2>
+          <p>Complete comparisons from Tables 1 and 2 on ScanRefer, Nr3D, and Sr3D. PruneGround achieves the highest overall scores on all three benchmarks among the methods reported.</p>
         </div>
 
         <div class="result-summary reveal">
-          <div><span class="rank">#1</span><p><b>ScanRefer</b><br>all Unique, Multiple, and Overall settings</p></div>
+          <div><span class="rank">#1</span><p><b>Overall accuracy</b><br>on ScanRefer, Nr3D, and Sr3D</p></div>
           <div><span class="rank">9/10</span><p><b>Nr3D + Sr3D</b><br>evaluation settings at Acc@0.5</p></div>
           <div><span class="rank">+6.8</span><p><b>ScanRefer Overall</b><br>Acc@0.25 over PQ3D</p></div>
         </div>
@@ -363,55 +366,93 @@
           </div>
 
           <div class="result-panel" id="panel-scanrefer" role="tabpanel" aria-labelledby="tab-scanrefer">
-            <div class="table-meta"><span>Accuracy (%)</span><span>↑ higher is better</span></div>
-            <div class="table-scroll">
+            <div class="table-meta"><span>Table 1 · ScanRefer</span><span>Accuracy (%) · ↑ higher is better</span></div>
+            <div class="table-scroll" tabindex="0" role="region" aria-label="ScanRefer results; scroll horizontally for all columns">
               <table>
-                <thead><tr><th rowspan="2">Method</th><th colspan="2">Unique</th><th colspan="2">Multiple</th><th colspan="2">Overall</th></tr><tr><th>@0.25</th><th>@0.5</th><th>@0.25</th><th>@0.5</th><th>@0.25</th><th>@0.5</th></tr></thead>
+                <caption class="sr-only">ScanRefer grounding accuracy from paper Table 1, page 7. Acc@0.25 and Acc@0.5 (IoU).</caption>
+                <thead><tr><th rowspan="2" scope="col">Method</th><th rowspan="2" scope="col">Venue</th><th colspan="2" scope="colgroup">Unique</th><th colspan="2" scope="colgroup">Multiple</th><th colspan="2" scope="colgroup">Overall</th></tr><tr><th scope="col">Acc@0.25</th><th scope="col">Acc@0.5</th><th scope="col">Acc@0.25</th><th scope="col">Acc@0.5</th><th scope="col">Acc@0.25</th><th scope="col">Acc@0.5</th></tr></thead>
                 <tbody>
-                  <tr><td>EDA</td><td>85.8</td><td>68.6</td><td>49.1</td><td>37.6</td><td>54.6</td><td>42.3</td></tr>
-                  <tr><td>PQ3D</td><td>86.7</td><td>78.3</td><td>51.5</td><td>46.2</td><td>57.0</td><td>51.2</td></tr>
-                  <tr><td>VGMamba</td><td><b>91.9</b></td><td>79.6</td><td>54.8</td><td>47.6</td><td>60.0</td><td>53.9</td></tr>
-                  <tr><td>PanoGrounder</td><td>84.3</td><td>—</td><td>55.3</td><td>—</td><td>61.0</td><td>—</td></tr>
-                  <tr class="ours-row"><td>PruneGround <span>Ours</span></td><td>90.2</td><td><b>84.7</b></td><td><b>57.6</b></td><td><b>49.4</b></td><td><b>63.8</b></td><td><b>56.1</b></td></tr>
+                  <tr><th scope="row">ScanRefer<small>Chen et al., 2020</small></th><td>ECCV</td><td>67.6</td><td>46.2</td><td>32.1</td><td>21.3</td><td>40.0</td><td>26.1</td></tr>
+                  <tr><th scope="row">MVT<small>Huang et al., 2022a</small></th><td>CVPR</td><td>77.7</td><td>66.5</td><td>31.9</td><td>25.3</td><td>40.8</td><td>33.3</td></tr>
+                  <tr><th scope="row">3D-SPS<small>Luo et al., 2022</small></th><td>CVPR</td><td>84.1</td><td>66.7</td><td>40.3</td><td>29.8</td><td>48.8</td><td>37.0</td></tr>
+                  <tr><th scope="row">EDA<small>Wu et al., 2023b</small></th><td>CVPR</td><td>85.8</td><td>68.6</td><td>49.1</td><td>37.6</td><td>54.6</td><td>42.3</td></tr>
+                  <tr><th scope="row">ConcreteNet<small>Unal et al., 2023</small></th><td>ECCV</td><td>86.4</td><td>82.1</td><td>42.4</td><td>38.4</td><td>50.6</td><td>46.5</td></tr>
+                  <tr><th scope="row">Chat-Scene<small>Huang et al., 2023</small></th><td>NeurIPS</td><td>89.6</td><td><u>82.5</u></td><td>47.8</td><td>42.9</td><td>55.5</td><td>50.2</td></tr>
+                  <tr><th scope="row">VPP-Net<small>Shi et al., 2024</small></th><td>CVPR</td><td>86.1</td><td>67.1</td><td>50.3</td><td>39.0</td><td>55.7</td><td>43.3</td></tr>
+                  <tr><th scope="row">G³-LQ<small>Wang et al., 2024</small></th><td>CVPR</td><td>88.6</td><td>73.3</td><td>50.2</td><td>39.7</td><td>56.0</td><td>44.7</td></tr>
+                  <tr><th scope="row">MA²TransVG<small>Xu et al., 2024a</small></th><td>CVPR</td><td>86.3</td><td>74.1</td><td>53.8</td><td>41.4</td><td>57.9</td><td>45.7</td></tr>
+                  <tr><th scope="row">MCLN<small>Qian et al., 2024</small></th><td>ECCV</td><td>86.9</td><td>72.7</td><td>52.0</td><td>40.8</td><td>57.2</td><td>45.5</td></tr>
+                  <tr><th scope="row">PQ3D<small>Zhu et al., 2024b</small></th><td>ECCV</td><td>86.7</td><td>78.3</td><td>51.5</td><td>46.2</td><td>57.0</td><td>51.2</td></tr>
+                  <tr><th scope="row">VGMamba<small>Zhu et al., 2025b</small></th><td>ICCV</td><td><strong>91.9</strong></td><td>79.6</td><td>54.8</td><td><u>47.6</u></td><td>60.0</td><td><u>53.9</u></td></tr>
+                  <tr><th scope="row">PanoGrounder<small>Jung et al., 2025</small></th><td>arXiv</td><td>84.3</td><td aria-label="Not reported">—</td><td><u>55.3</u></td><td aria-label="Not reported">—</td><td><u>61.0</u></td><td aria-label="Not reported">—</td></tr>
+                  <tr class="ours-row"><th scope="row">PruneGround<small>Ours</small></th><td>—</td><td><u>90.2</u></td><td><strong>84.7</strong></td><td><strong>57.6</strong></td><td><strong>49.4</strong></td><td><strong>63.8</strong></td><td><strong>56.1</strong></td></tr>
                 </tbody>
               </table>
             </div>
+            <p class="table-note"><strong>Bold:</strong> best · <u>Underline:</u> second-best · —: not reported. <a href="PruneGround.pdf#page=7" target="_blank" rel="noopener">Paper Table 1 ↗</a></p>
           </div>
 
           <div class="result-panel" id="panel-nr3d" role="tabpanel" aria-labelledby="tab-nr3d" hidden>
-            <div class="table-meta"><span>Acc@0.5 (%)</span><span>↑ higher is better</span></div>
-            <div class="table-scroll">
+            <div class="table-meta"><span>Table 2 · Nr3D</span><span>Accuracy (%) · ↑ higher is better</span></div>
+            <div class="table-scroll" tabindex="0" role="region" aria-label="Nr3D results; scroll horizontally for all columns">
               <table>
-                <thead><tr><th>Method</th><th>Easy</th><th>Hard</th><th>View-D</th><th>View-I</th><th>Overall</th></tr></thead>
+                <caption class="sr-only">Nr3D grounding accuracy from paper Table 2, page 7. Acc@0.5 (IoU).</caption>
+                <thead><tr><th scope="col">Method</th><th scope="col">Venue</th><th scope="col">Easy</th><th scope="col">Hard</th><th scope="col">View-D</th><th scope="col">View-I</th><th scope="col">Overall</th></tr></thead>
                 <tbody>
-                  <tr><td>MIKASA</td><td>69.7</td><td>59.4</td><td>65.4</td><td>64.0</td><td>64.4</td></tr>
-                  <tr><td>ViewSRD</td><td>75.3</td><td>64.8</td><td>68.6</td><td>70.6</td><td>69.9</td></tr>
-                  <tr><td>PanoGrounder</td><td>82.2</td><td>67.2</td><td>70.5</td><td>76.3</td><td>74.6</td></tr>
-                  <tr class="ours-row"><td>PruneGround <span>Ours</span></td><td><b>84.6</b></td><td><b>68.8</b></td><td><b>71.2</b></td><td><b>76.6</b></td><td><b>75.1</b></td></tr>
+                  <tr><th scope="row">ReferIt3D<small>Achlioptas et al., 2020</small></th><td>ECCV</td><td>43.6</td><td>27.9</td><td>32.5</td><td>37.1</td><td>35.6</td></tr>
+                  <tr><th scope="row">ViL3DRel<small>Chen et al., 2022a</small></th><td>NeurIPS</td><td>70.2</td><td>57.4</td><td>62.0</td><td>64.5</td><td>64.4</td></tr>
+                  <tr><th scope="row">3D-VisTA<small>Zhu et al., 2023</small></th><td>ICCV</td><td>65.9</td><td>49.4</td><td>53.7</td><td>59.4</td><td>57.5</td></tr>
+                  <tr><th scope="row">MIKASA<small>Chang et al., 2024</small></th><td>CVPR</td><td>69.7</td><td>59.4</td><td>65.4</td><td>64.0</td><td>64.4</td></tr>
+                  <tr><th scope="row">G³-LQ<small>Wang et al., 2024</small></th><td>CVPR</td><td aria-label="Not reported">—</td><td>50.7</td><td aria-label="Not reported">—</td><td aria-label="Not reported">—</td><td>58.4</td></tr>
+                  <tr><th scope="row">MA²TransVG<small>Xu et al., 2024a</small></th><td>CVPR</td><td aria-label="Not reported">—</td><td>57.6</td><td aria-label="Not reported">—</td><td aria-label="Not reported">—</td><td>65.2</td></tr>
+                  <tr><th scope="row">PQ3D<small>Zhu et al., 2024b</small></th><td>ICCV</td><td>73.3</td><td>56.7</td><td>60.7</td><td>67.0</td><td>64.9</td></tr>
+                  <tr><th scope="row">LIBA<small>Wang et al., 2025b</small></th><td>AAAI</td><td aria-label="Not reported">—</td><td>57.2</td><td>60.3</td><td aria-label="Not reported">—</td><td>64.5</td></tr>
+                  <tr><th scope="row">ViewSRD<small>Huang et al., 2025</small></th><td>ICCV</td><td>75.3</td><td>64.8</td><td>68.6</td><td>70.6</td><td>69.9</td></tr>
+                  <tr><th scope="row">VGMamba<small>Zhu et al., 2025b</small></th><td>ICCV</td><td aria-label="Not reported">—</td><td>61.4</td><td aria-label="Not reported">—</td><td aria-label="Not reported">—</td><td>68.3</td></tr>
+                  <tr><th scope="row">PanoGrounder<small>Jung et al., 2025</small></th><td>arXiv</td><td><u>82.2</u></td><td><u>67.2</u></td><td><u>70.5</u></td><td><u>76.3</u></td><td><u>74.6</u></td></tr>
+                  <tr class="ours-row"><th scope="row">PruneGround<small>Ours</small></th><td>—</td><td><strong>84.6</strong></td><td><strong>68.8</strong></td><td><strong>71.2</strong></td><td><strong>76.6</strong></td><td><strong>75.1</strong></td></tr>
                 </tbody>
               </table>
             </div>
+            <p class="table-note"><strong>Bold:</strong> best · <u>Underline:</u> second-best · —: not reported. <a href="PruneGround.pdf#page=7" target="_blank" rel="noopener">Paper Table 2 ↗</a> View-D: view-dependent; View-I: view-independent.</p>
           </div>
 
           <div class="result-panel" id="panel-sr3d" role="tabpanel" aria-labelledby="tab-sr3d" hidden>
-            <div class="table-meta"><span>Acc@0.5 (%)</span><span>↑ higher is better</span></div>
-            <div class="table-scroll">
+            <div class="table-meta"><span>Table 2 · Sr3D</span><span>Accuracy (%) · ↑ higher is better</span></div>
+            <div class="table-scroll" tabindex="0" role="region" aria-label="Sr3D results; scroll horizontally for all columns">
               <table>
-                <thead><tr><th>Method</th><th>Easy</th><th>Hard</th><th>View-D</th><th>View-I</th><th>Overall</th></tr></thead>
+                <caption class="sr-only">Sr3D grounding accuracy from paper Table 2, page 7. Acc@0.5 (IoU).</caption>
+                <thead><tr><th scope="col">Method</th><th scope="col">Venue</th><th scope="col">Easy</th><th scope="col">Hard</th><th scope="col">View-D</th><th scope="col">View-I</th><th scope="col">Overall</th></tr></thead>
                 <tbody>
-                  <tr><td>MIKASA</td><td>78.6</td><td>67.3</td><td><b>70.4</b></td><td>75.4</td><td>75.2</td></tr>
-                  <tr><td>ViewSRD</td><td>78.3</td><td>70.6</td><td>69.0</td><td>76.2</td><td>76.0</td></tr>
-                  <tr><td>VGMamba</td><td>—</td><td>74.4</td><td>—</td><td>—</td><td>81.3</td></tr>
-                  <tr class="ours-row"><td>PruneGround <span>Ours</span></td><td><b>83.7</b></td><td><b>76.5</b></td><td>61.7</td><td><b>82.4</b></td><td><b>81.5</b></td></tr>
+                  <tr><th scope="row">ReferIt3D<small>Achlioptas et al., 2020</small></th><td>ECCV</td><td>44.7</td><td>31.5</td><td>39.2</td><td>40.8</td><td>40.8</td></tr>
+                  <tr><th scope="row">ViL3DRel<small>Chen et al., 2022a</small></th><td>NeurIPS</td><td>74.9</td><td>67.9</td><td>63.8</td><td>73.2</td><td>72.8</td></tr>
+                  <tr><th scope="row">3D-VisTA<small>Zhu et al., 2023</small></th><td>ICCV</td><td>72.1</td><td>63.6</td><td>57.9</td><td>70.1</td><td>69.6</td></tr>
+                  <tr><th scope="row">MIKASA<small>Chang et al., 2024</small></th><td>CVPR</td><td>78.6</td><td>67.3</td><td><strong>70.4</strong></td><td>75.4</td><td>75.2</td></tr>
+                  <tr><th scope="row">G³-LQ<small>Wang et al., 2024</small></th><td>CVPR</td><td aria-label="Not reported">—</td><td>66.3</td><td aria-label="Not reported">—</td><td aria-label="Not reported">—</td><td>73.1</td></tr>
+                  <tr><th scope="row">MA²TransVG<small>Xu et al., 2024a</small></th><td>CVPR</td><td aria-label="Not reported">—</td><td>69.3</td><td aria-label="Not reported">—</td><td aria-label="Not reported">—</td><td>73.9</td></tr>
+                  <tr><th scope="row">PQ3D<small>Zhu et al., 2024b</small></th><td>ICCV</td><td>78.8</td><td>68.2</td><td>51.5</td><td>76.7</td><td>75.6</td></tr>
+                  <tr><th scope="row">LIBA<small>Wang et al., 2025b</small></th><td>AAAI</td><td aria-label="Not reported">—</td><td>70.2</td><td>61.7</td><td aria-label="Not reported">—</td><td>75.8</td></tr>
+                  <tr><th scope="row">ViewSRD<small>Huang et al., 2025</small></th><td>ICCV</td><td>78.3</td><td>70.6</td><td><u>69.0</u></td><td>76.2</td><td>76.0</td></tr>
+                  <tr><th scope="row">VGMamba<small>Zhu et al., 2025b</small></th><td>ICCV</td><td aria-label="Not reported">—</td><td><u>74.4</u></td><td aria-label="Not reported">—</td><td aria-label="Not reported">—</td><td><u>81.3</u></td></tr>
+                  <tr><th scope="row">PanoGrounder<small>Jung et al., 2025</small></th><td>arXiv</td><td><u>81.3</u></td><td>74.2</td><td>60.5</td><td><u>80.0</u></td><td>79.1</td></tr>
+                  <tr class="ours-row"><th scope="row">PruneGround<small>Ours</small></th><td>—</td><td><strong>83.7</strong></td><td><strong>76.5</strong></td><td>61.7</td><td><strong>82.4</strong></td><td><strong>81.5</strong></td></tr>
                 </tbody>
               </table>
             </div>
+            <p class="table-note"><strong>Bold:</strong> best · <u>Underline:</u> second-best · —: not reported. <a href="PruneGround.pdf#page=7" target="_blank" rel="noopener">Paper Table 2 ↗</a> View-D: view-dependent; View-I: view-independent.</p>
           </div>
         </div>
 
+        <aside class="results-insights reveal" aria-labelledby="insights-title">
+          <p class="section-kicker">Insights</p>
+          <h3 id="insights-title">Less ambiguity. More useful context.</h3>
+          <p>LGSP reduces the average candidate set from <b>5.72 to 1.62</b> on ScanRefer Multiple. Combining pruning with description reformulation improves ScanRefer overall Acc@0.5 from <b>49.1% to 56.1%</b>.</p>
+          <a href="PruneGround.pdf#page=7" target="_blank" rel="noopener">Component ablation and candidate analysis · Tables 3–4 ↗</a>
+        </aside>
+
         <section class="qual-showcase" id="qualitative" aria-labelledby="qual-title" tabindex="0" aria-describedby="qual-keyboard-hint">
           <div class="qual-heading">
-            <div><p class="section-kicker">A closer look · Three cases</p><h3 id="qual-title">Interactive Qualitative Results</h3><p>Follow the language. Focus the scene. Find the target.</p></div>
+            <div><p class="section-kicker">A closer look · Three cases</p><h3 id="qual-title">Qualitative Results</h3><p>Follow the language. Focus the scene. Find the target.</p></div>
             <button class="qual-source" type="button" data-lightbox="assets/images/qualitative.png" aria-haspopup="dialog">View full paper figure <span aria-hidden="true">↗</span></button>
           </div>
           <div class="qual-cases" role="group" aria-label="Choose a qualitative case">
@@ -446,70 +487,22 @@
       </div>
     </section>
 
-    <section class="section analysis-section" id="analysis">
+    <section class="section limitation-section" id="limitation">
       <div class="shell">
-        <div class="section-heading reveal">
-          <p class="section-kicker">05 · Analysis</p>
-          <h2>Where the gains<br><span>come from.</span></h2>
-          <p>Each stage contributes measurable value: pruning narrows the candidate set, and visually conditioned reformulation adds precise target–anchor relations.</p>
-        </div>
-
-        <div class="analysis-grid">
-          <article class="ablation-card reveal">
-            <p class="mini-kicker">ScanRefer Overall · Acc@0.5</p>
-            <h3>Component ablation</h3>
-            <div class="bar-list" aria-label="Component ablation accuracy chart">
-              <div class="bar-row"><div><span>LLM-Grounder</span><b>49.1</b></div><i style="--bar: 76.7%"></i></div>
-              <div class="bar-row"><div><span>+ LGSP</span><b>52.3 <em>+3.2</em></b></div><i style="--bar: 81.7%"></i></div>
-              <div class="bar-row"><div><span>+ MCDR simplification</span><b>54.0 <em>+1.7</em></b></div><i style="--bar: 84.4%"></i></div>
-              <div class="bar-row best"><div><span>+ MCDR augmentation</span><b>56.1 <em>+2.1</em></b></div><i style="--bar: 87.7%"></i></div>
-            </div>
-          </article>
-
-          <article class="candidate-card reveal" data-delay="80">
-            <p class="mini-kicker">LGSP · Candidate reduction</p>
-            <h3>Less clutter, fewer distractors</h3>
-            <div class="candidate-comparison">
-              <div><span>ScanRefer Multiple</span><strong>5.72 <i>→</i> 1.62</strong><small>average candidates</small></div>
-              <div><span>Sr3D Hard</span><strong>2.43 <i>→</i> 1.28</strong><small>average candidates</small></div>
-            </div>
-          </article>
-
-          <article class="efficiency-card reveal">
-            <p class="mini-kicker">Qwen2.5-VL-3B · Pruning stage</p>
-            <h3>Compact model, high recall</h3>
-            <div class="efficiency-metrics">
-              <div><strong>15.1%</strong><span>scene area retained</span></div>
-              <div><strong>94.7%</strong><span>target recall</span></div>
-              <div><strong>1.4s</strong><span>per VLM stage</span></div>
-              <div><strong>4.1s</strong><span>end-to-end pipeline</span></div>
-            </div>
-            <p class="card-footnote">Reported on an NVIDIA A100; full pipeline maximum GPU usage is 10 GB.</p>
-          </article>
-
-          <article class="human-card reveal" data-delay="80">
-            <p class="mini-kicker">Human evaluation · 5-point scale</p>
-            <h3>Better grounded language</h3>
-            <div class="score-grid">
-              <div><span>Faithfulness</span><strong>4.47</strong><small>Original 4.21</small></div>
-              <div><span>Completeness</span><strong>4.39</strong><small>Original 2.84</small></div>
-              <div><span>Spatial precision</span><strong>4.28</strong><small>Original 3.15</small></div>
-            </div>
-            <p class="card-footnote">150 samples, three annotators. MCDR leads on faithfulness, completeness, and spatial precision.</p>
-          </article>
-        </div>
-
+        <div class="section-heading reveal"><p class="section-kicker">05 · Limitation</p><h2>Early errors<br><span>can travel downstream.</span></h2></div>
         <div class="limitations reveal">
           <div class="limitations-copy">
-            <p class="section-kicker">Known limitation</p>
             <h3>A three-stage pipeline can propagate errors.</h3>
             <p>Low-quality renderings, occlusion, incomplete point clouds, or mistakes in LGSP and MCDR can remove the target or distort its relations. Those early errors may then be amplified by the final grounder.</p>
-            <a href="PruneGround.pdf#page=18" target="_blank" rel="noopener">Read the failure analysis <span aria-hidden="true">↗</span></a>
+            <a href="PruneGround.pdf#page=25" target="_blank" rel="noopener">Read the failure analysis <span aria-hidden="true">↗</span></a>
           </div>
-          <button class="figure-button" type="button" data-lightbox="assets/images/failure.png" aria-label="Open PruneGround failure cases">
-            <img src="assets/images/failure.png" alt="PruneGround failure cases caused by low-quality views and incorrect spatial pruning" loading="lazy" width="1850" height="1112">
-            <span class="expand-hint">Expand figure <span aria-hidden="true">↗</span></span>
-          </button>
+          <figure class="limitation-figure">
+            <button class="figure-button" type="button" data-lightbox="assets/images/failure.png" aria-label="Open PruneGround failure cases">
+              <img src="assets/images/failure.png" alt="PruneGround failure cases caused by low-quality views and incorrect spatial pruning" loading="lazy" width="1850" height="1112">
+              <span class="expand-hint">Expand figure <span aria-hidden="true">↗</span></span>
+            </button>
+            <figcaption>“Close to the TV” is relative: an incomplete description can leave the target ambiguous. Noisy views or incorrect pruning can compound that ambiguity and lead to an incorrect prediction.</figcaption>
+          </figure>
         </div>
       </div>
     </section>

@@ -228,7 +228,7 @@
     $('pg-story-title').textContent = why ? 'Same room. Different descriptions.' : 'From full scene to target grounding.';
     $('pg-story-subtitle').textContent = why
       ? 'Several chairs look alike. Choose a description to see which one its spatial relationship identifies.'
-      : 'Explore the selected chair, its local region and a refined description.';
+      : 'Choose a stage below. Drag to orbit, scroll to zoom, or switch to Top view.';
     $('pg-choice-title').textContent = query.letter + ' · ' + query.name;
     $('pg-choice-explanation').textContent = state.query === 'tv'
       ? 'Choose the chair at the short end of the table, between the table and the TV. It is opposite chair B, not one of the chairs in the two rows along the long sides.'
