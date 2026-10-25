@@ -40,8 +40,10 @@ const shots = fs.mkdtempSync(path.join(os.tmpdir(), 'pruneground-layout-'));
     await page.click('[data-result-tab="scanrefer"]');
     for (const width of [1440,1024,768,390,320]) {
       await page.setViewportSize({width,height:1100});
+      // Wait for responsive media queries after viewport changes and full-section captures.
+      await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
       const overflow = await page.evaluate(() => [...document.querySelectorAll('main > section, .hero, .nav-shell, .metric, .method-card, .limitations, .qual-showcase')].filter(e => e.getBoundingClientRect().right > innerWidth+1 || (getComputedStyle(e).overflowX === 'visible' && e.scrollWidth > e.clientWidth+1)).map(e => e.id || e.className));
-      if (overflow.length) console.log(await page.evaluate(() => [...document.querySelectorAll('main *')].filter(e => !e.closest('.table-scroll, .qual-cases, pre') && e.getBoundingClientRect().right > innerWidth+1).map(e => [e.tagName, e.className, e.getBoundingClientRect().width, e.textContent.slice(0,70)])));
+      if (overflow.length) console.log(await page.evaluate(() => [...document.querySelectorAll('main *')].filter(e => !e.closest('.table-scroll, .qual-cases, pre') && e.getBoundingClientRect().right > innerWidth+1).map(e => [e.tagName, e.className, e.getBoundingClientRect().width, getComputedStyle(e).fontSize, e.textContent.slice(0,70)])));
       assert.deepEqual(overflow, [], `No container overflow at ${width}px: ${overflow}`);
       if (width === 1440 || width === 390) {
         await page.evaluate(() => { document.querySelector('.site-nav').style.visibility='hidden'; });
