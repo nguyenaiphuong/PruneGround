@@ -136,6 +136,7 @@ const checkDescription = async (page, query) => {
         assert.equal(await page.locator('#pg-reformulation-label').textContent(), id === 'scene0050_01' ? 'Spatial description' : 'MCDR · saved model output');
         assert.equal(await page.locator('#pg-refined-description').isVisible(), false);
         if (id === 'scene0050_01') {
+          assert.equal(await page.locator('#pg-query').textContent(), '“This is the big sofa chair near the large window”');
           const original = JSON.parse(fs.readFileSync(root + '/assets/3d/scene0050_01/reformulation.json'));
           const expected = [...original.target_properties, ...original.augmented_target_properties, ...original.utterances, ...original.augmented_utterances].map(line => line.replace('behind the black coffee table', 'behind the brown coffee table and near the piano chair'));
           assert.deepEqual(await page.locator('#pg-reformulation li').allTextContents(), expected);

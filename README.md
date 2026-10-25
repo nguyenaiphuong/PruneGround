@@ -72,9 +72,10 @@ instead of the original `reformulation.json` files. As of 2026-10-25 these conta
 the user's exact replacement wording, not Qwen output or a new MCDR run. The UI
 restores four groups: Target properties, Visual additions, Target–anchor relations,
 and Additional relations, with `Target: chair` and no narrative summary.
-The sofa-chair scene (`scene0050_01`) also uses a separate display file: only
+The sofa-chair scene (`scene0050_01`) also uses a separate display file:
 “behind the black coffee table” changes to “behind the brown coffee table and
-near the piano chair”; all other statements are retained. These user-authored
+near the piano chair”, and the original query's typo “new the large window” is
+corrected to “near the large window”; all other statements are retained. These user-authored
 changes are not claimed as independently validated model results. The UI uses
 neutral “Spatial description” wording, with provenance in collapsed data sources only.
 Original A/B model JSON, logs, images and hashes are unchanged.

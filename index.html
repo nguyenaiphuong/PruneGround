@@ -63,12 +63,12 @@
   <script src="assets/vendor/three-r128/PLYLoader.js" defer></script>
   <script src="assets/vendor/three-r128/OrbitControls.js" defer></script>
   <script src="script.js?v=20261022" defer></script>
-  <script src="3d-explorer.js?v=20261025-layout2" defer></script>
+  <script src="3d-explorer.js?v=20261025-caption3" defer></script>
   <link rel="stylesheet" href="qualitative-showcase.css?v=1">
   <script src="qualitative-showcase.js?v=1" defer></script>
   <link rel="preload" href="assets/fonts/inter.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/space-grotesk.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="site-refinement.css?v=1">
+  <link rel="stylesheet" href="site-refinement.css?v=2">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -188,7 +188,7 @@
             <img src="assets/images/intuition.png" alt="Side and top views of one room: the chair near the door and the chair under the board are different targets" loading="lazy" width="1630" height="788">
             <span class="expand-hint">Expand figure <span aria-hidden="true">↗</span></span>
           </button>
-          <figcaption><b>Figure 1 — Same objects, different spatial relationships.</b> Anchors such as the door and board distinguish similar chairs. PruneGround uses these relations to focus on the relevant neighborhood instead of reasoning over every same-class candidate.</figcaption>
+          <figcaption>Figure 1: <b>Intuition of our proposed method, inspired by human spatial cognition.</b> Given a language description, the grounding model, as humans do, should infer the target object by attending only to spatially relevant regions guided by anchor objects and spatial relations, rather than reasoning over all candidate objects in the scene (e.g., all chairs).</figcaption>
         </figure>
 
       </div>
@@ -339,7 +339,7 @@
             <img src="assets/images/pipeline.png" alt="PruneGround pipeline: language-guided spatial pruning, multi-view-conditioned description reformulation, and LLM-based grounding" loading="lazy" width="2042" height="950">
             <span class="expand-hint">Expand figure <span aria-hidden="true">↗</span></span>
           </button>
-          <figcaption><b>Figure 2 — Prune → reformulate → ground.</b> The full three-stage PruneGround pipeline: LGSP removes irrelevant regions, MCDR restructures and enriches the description, and LLM-Grounder predicts the target in the pruned scene.</figcaption>
+          <figcaption>Figure 2: <b>Overview of our <span class="paper-prune">Prune</span><span class="paper-ground">Ground</span></b> pipeline, consisting of three <em>plug-and-play</em> components: ① <b class="paper-prune">LGSP</b> to remove irrelevant regions, ② <b class="paper-mcdr">MCDR</b> to simplify the description while adding relational spatial information, and ③ <b class="paper-ground">LLM-Grounder</b> that repurposes a detection-pretrained spatial LLM for language-conditioned grounding on the pruned scene and reformulated description.</figcaption>
         </figure>
       </div>
     </section>

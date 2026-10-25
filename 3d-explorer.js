@@ -153,7 +153,7 @@
       const root = 'assets/3d/' + key;
       cache.set(key, Promise.allSettled([
         sceneInputs(id), loadPly(root + (variant ? '/display-crop.ply' : '/pruned.ply'), null, id),
-        readJSON(root + (id !== 'scene0025_00' ? '/display-description.json?v=20261025-format1' : '/reformulation.json'))
+        readJSON(root + (id !== 'scene0025_00' ? '/display-description.json?v=20261025-caption3' : '/reformulation.json'))
       ]).then((results) => {
         const failure = results.find((result) => result.status === 'rejected');
         if (failure) {

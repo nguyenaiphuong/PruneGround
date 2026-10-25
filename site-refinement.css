@@ -14,6 +14,10 @@ h1, h2, h3, h4 { font-family: var(--font-display); }
 .eyebrow, .section-kicker, .card-label, .mini-kicker, .step-tag { font-size: 13px; }
 .hero-lede, .section-heading > p:last-child { font-size: 18px; }
 .paper-figure figcaption, .expand-hint { font-size: 15px; line-height: 1.7; }
+/* Exact text colors embedded in the paper's Figure 2 caption. */
+.paper-figure figcaption .paper-prune { color: #b472c8; }
+.paper-figure figcaption .paper-mcdr { color: #e11e56; }
+.paper-figure figcaption .paper-ground { color: #e696be; }
 .metric-strip { max-width: none; border: 0; gap: 18px; align-items: stretch; }
 .metric, .metric + .metric, .metric:nth-child(3), .metric:nth-child(4) { display: block; min-width: 0; padding: 26px 23px; text-align: left; border: 1px solid var(--line); border-radius: 18px; background: #fff; box-shadow: 0 8px 22px #3922520b; transition: transform 250ms ease, box-shadow 250ms ease, border-color 250ms ease, opacity 600ms ease; }
 .metric strong { display: block; font-size: 42px; margin-bottom: 18px; }
