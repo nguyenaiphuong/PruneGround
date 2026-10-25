@@ -144,8 +144,21 @@ const checkDescription = async (page, query) => {
         }
       }
       if (stage === 'target') {
-        assert.equal(await page.locator('#pg-stage-badge').textContent(), 'Prediction not released');
-        assert.equal(await page.locator('#pg-object-labels span').count(), 0);
+        assert.equal(await page.locator('#pg-stage-badge').textContent(), 'Reference only');
+        assert.equal(await page.locator('#pg-grounding-heading').textContent(), 'Reference target box');
+        assert.match(await page.locator('#pg-grounding-detail').textContent(), /sofa.*ScanNet reference.*not a PruneGround prediction/);
+        assert.equal(await page.locator('#pg-object-labels span').count(), 1);
+        assert.equal(await page.locator('.reference-target.selected').textContent(), 'Reference sofa');
+        assert.equal(await page.locator('.reference-target.selected').getAttribute('data-object-id'), id === 'scene0025_00' ? '3' : '0');
+        assert.equal(await page.locator('.legend-reference').count(), 1);
+        assert.equal(await page.locator('.legend-region').count(), 0);
+        assert.doesNotMatch(await page.locator('#pg-how-info').textContent(), /not available|not released/);
+        await page.locator('#pg-explorer').screenshot({path: shots + '/target-' + id + '.png'});
+        await page.click('#pg-top-view');
+        await frame(page);
+        assert.equal(await page.locator('.reference-target.selected').isVisible(), true);
+        await page.locator('#pg-canvas-wrap').screenshot({path: shots + '/target-top-' + id + '.png'});
+        await page.click('#pg-reset-view');
       }
     }
   }
@@ -177,7 +190,7 @@ const checkDescription = async (page, query) => {
   assert.equal(await page.locator('.chair-door.selected').count(), 1);
   assert.equal(fullRequests.length, 1, 'Both query variants must share the full room download');
   assert.ok(doorRequests.some(url => url.endsWith('/display-crop.ply')));
-  assert.ok(doorRequests.some(url => url.endsWith('/display-description.json?v=20261025-format1')));
+  assert.ok(doorRequests.some(url => new URL(url).pathname.endsWith('/display-description.json')));
   assert.ok(!doorRequests.some(url => url.includes('/reformulation.json')), 'Raw model output must remain archived, not used as the edited description');
   assert.ok(!doorRequests.some(url => url.endsWith('/pruned.ply')), 'The wider original inference is archived, not displayed');
   await page.click('.mesh-details summary');
@@ -207,6 +220,16 @@ const checkDescription = async (page, query) => {
   assert.equal(await page.locator('#pg-reformulation-panel').isVisible(), true);
   await checkDescription(page, 'door');
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+  for (const id of ['scene0025_00', 'scene0050_01']) {
+    await page.selectOption('#pg-scene-select', id);
+    await ready();
+    await page.click('[data-pg-stage="target"]');
+    await frame(page);
+    assert.equal(await page.locator('.reference-target.selected').textContent(), 'Reference sofa');
+    assert.equal(await page.locator('#pg-grounding-heading').textContent(), 'Reference target box');
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+    await page.locator('#pg-canvas-wrap').screenshot({path: shots + '/target-mobile-' + id + '.png'});
+  }
   assert.deepEqual(errors, []);
   console.log('Mobile: responsive layout and pipeline controls passed.');
   console.log('Screenshots:', shots);

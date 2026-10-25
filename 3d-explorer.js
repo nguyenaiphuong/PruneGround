@@ -12,12 +12,12 @@
     scene0025_00: {
       name: 'Sofa by door', query: 'The sofa next to the door, closest to the cabinet',
       axisAlignment: [0.707107, 0.707107, 0, -4.050430, -0.707107, 0.707107, 0, -0.052607, 0, 0, 1, -0.049991, 0, 0, 0, 1],
-      referenceTarget: null, predictedBox: null
+      referenceTarget: 3, referenceName: 'sofa', viewDirection: [0.75, -0.5, 0.95], predictedBox: null
     },
     scene0050_01: {
       name: 'Sofa chair', query: 'This is the big sofa chair near the large window',
       axisAlignment: [-0.061049, 0.998135, 0, -2.161000, -0.998135, -0.061049, 0, 2.144810, 0, 0, 1, -0.153264, 0, 0, 0, 1],
-      referenceTarget: null, predictedBox: null
+      referenceTarget: 0, referenceName: 'sofa', predictedBox: null
     }
   };
   const QUERIES = {
@@ -130,7 +130,7 @@
       const root = 'assets/3d/' + id;
       const pending = Promise.allSettled([
         loadPly(root + '/full.ply', SCENES[id].axisAlignment, id),
-        id === 'scene0011_00' ? readJSON(root + '/reference-targets.json') : Promise.resolve(null)
+        SCENES[id].referenceTarget !== null ? readJSON(root + '/reference-targets.json') : Promise.resolve(null)
       ]).then((results) => {
         const failure = results.find((result) => result.status === 'rejected');
         if (failure) {
@@ -139,6 +139,11 @@
           throw failure.reason;
         }
         const [full, reference] = results.map((result) => result.value);
+        if (reference && !reference.objects[SCENES[id].referenceTarget]) {
+          full.dispose();
+          inputCache.delete(id);
+          throw new Error('The reference target is missing for ' + id);
+        }
         return { full, reference, colors: full.attributes.color.array.slice() };
       });
       inputCache.set(id, pending);
@@ -204,6 +209,8 @@
     const query = QUERIES[state.query];
     const definition = sceneDefinition();
     const doorwayRun = state.scene === 'scene0011_00' && state.query === 'door';
+    const sameRoom = state.scene === 'scene0011_00';
+    const targetName = definition.referenceName || 'chair';
     const hasReference = definition.referenceTarget !== null;
     const hasPrediction = Boolean(definition.predictedBox);
     const full = why || state.stage === 'full';
@@ -250,7 +257,7 @@
       target: hasPrediction
         ? ['Released prediction', 'The predicted target', 'This box comes from the supplied downstream grounding result.']
         : hasReference
-          ? ['Reference only', 'Locate the selected chair', 'The reference box identifies the chair described by the selected query.']
+          ? ['Reference only', 'Locate the selected ' + targetName, 'The reference box outlines the ' + targetName + ' in this example.']
           : ['Prediction not released', 'Grounding output is not available yet', 'This example includes pruning and reformulation only.']
     };
     const [badge, title, description] = descriptions[state.stage];
@@ -259,11 +266,12 @@
     $('pg-stage-description').textContent = description;
     $('pg-reformulation-panel').hidden = why || state.stage !== 'reformulated';
     $('pg-grounding-note').hidden = why || state.stage !== 'target' || hasPrediction;
+    $('pg-grounding-heading').textContent = hasReference ? 'Reference target box' : 'Predicted target box: not available';
     $('pg-grounding-detail').textContent = hasReference
-      ? 'The outlined chair is a ScanNet reference annotation, not a PruneGround prediction.'
+      ? 'The outlined ' + targetName + ' is a ScanNet reference annotation, not a PruneGround prediction.'
       : 'No target reference annotation is bundled for this scene either. The purple outline remains the extent of the retained mesh.';
     $('pg-next-stage').hidden = state.stage === 'target';
-    $('pg-next-stage').textContent = ({ full: 'Show pruned region →', pruned: 'See reformulated description →', reformulated: 'Inspect target availability →', target: '' })[state.stage];
+    $('pg-next-stage').textContent = ({ full: 'Show pruned region →', pruned: 'See reformulated description →', reformulated: hasReference || hasPrediction ? 'Show target box →' : 'Inspect target availability →', target: '' })[state.stage];
     $('pg-view-label').textContent = why ? 'Full room · reference highlights' : full ? 'Full room' : state.stage === 'target' && hasReference ? 'Pruned region · reference target' : 'Pruned region';
     $('pg-top-view').setAttribute('aria-pressed', String(state.top));
     $('pg-top-view').textContent = state.top ? 'Perspective view' : 'Top view';
@@ -277,7 +285,7 @@
     updateLegend(why ? [['chair-a', 'A · chair near TV'], ['chair-b', 'B · chair near doorway']]
       : full ? [['mesh', 'Full ScanNet scene']]
       : state.stage === 'target' && hasPrediction ? [['prediction', 'Predicted target box']]
-      : state.stage === 'target' && hasReference ? [[doorwayRun ? 'chair-b' : 'chair-a', 'Reference target · not a prediction']]
+      : state.stage === 'target' && hasReference ? [[sameRoom ? (doorwayRun ? 'chair-b' : 'chair-a') : 'reference', 'Reference target · not a prediction']]
       : [['region', 'Extent of retained mesh']]);
     if (active) buildReformulations(active.reformulation);
   }
@@ -386,9 +394,16 @@
         addLabel(bounds, 'Predicted target', 'chair-door selected');
       } else if (state.stage === 'target' && active.reference && definition.referenceTarget !== null) {
         const bounds = boundsOf(active.reference.objects[definition.referenceTarget]);
-        const query = QUERIES[state.query];
-        addBox(bounds, query.color, 1, true);
-        addLabel(bounds, query.letter + ' · Reference chair · not a prediction', 'chair-' + state.query + ' selected');
+        if (state.scene === 'scene0011_00') {
+          const query = QUERIES[state.query];
+          addBox(bounds, query.color, 1, true);
+          addLabel(bounds, query.letter + ' · Reference chair · not a prediction', 'chair-' + state.query + ' selected');
+        } else {
+          addBox(bounds, 0x6ce3b5, 1, true);
+          addLabel(bounds, 'Reference ' + definition.referenceName, 'reference-target selected');
+        }
+        // Expose reference identity for accessibility/QA, including object ID zero.
+        $('pg-object-labels').lastElementChild.dataset.objectId = String(definition.referenceTarget);
       } else {
         addBox(active.pruned.boundingBox, 0xc77bef, .9);
       }
@@ -412,7 +427,8 @@
       camera.position.set(center.x, center.y - distance * .0001, center.z + distance);
     } else {
       const distance = radius * (full ? .68 : 1.05) * Math.max(1, .9 / camera.aspect);
-      camera.position.set(center.x - distance * .66, center.y - distance * .5, center.z + distance * .95);
+      const [dx, dy, dz] = sceneDefinition().viewDirection || [-.66, -.5, .95];
+      camera.position.set(center.x + distance * dx, center.y + distance * dy, center.z + distance * dz);
     }
     camera.near = Math.max(radius / 500, .005);
     camera.far = Math.max(radius * 30, 100);

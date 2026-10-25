@@ -38,6 +38,8 @@ h1, h2, h3, h4 { font-family: var(--font-display); }
 .info-divider, .mesh-details summary, .mesh-details > p, .viewer-controls button,
 .viewer-legend, #pg-view-label, .mesh-stats strong, .pg-loading small { font-size: 12px; }
 .mesh-stats span { font-size: 11px; }
+.pg-object-label.reference-target { color: #b6f8d8; border-color: #6ce3b5; }
+.legend-reference { background: #6ce3b5; }
 .result-summary p, .result-summary b, .result-tabs button { font-size: 16px; }
 .result-tabs button { flex: 1; min-width: 0; padding-inline: 10px; }
 .table-meta { gap: 14px; flex-wrap: wrap; font-size: 12px; }

@@ -27,10 +27,27 @@ One Three.js canvas tells a two-step story:
 
 The official examples do **not** include downstream predicted target boxes.
 The final stage shows a clearly labeled ScanNet reference box for the chair
-example and an unavailable state for the other scenes. A retained-region box is
+example and both sofa scenes. A retained-region box is
 the axis-aligned extent of the pruned mesh, not the VLM's original crop box or a
 grounded target prediction. `predictedBox` is intentionally `null` in each scene
 definition; only populate it with a real, aligned downstream result.
+
+The two sofa boxes are derived from ScanNet instance vertices: couch 3 in
+`scene0025_00` (black sofa by the door) and couch 0 in `scene0050_01` (large
+brown sofa by the window). Their association with these displayed examples was
+manually checked; they are not official query-ground-truth pairs or model
+predictions. In `scene0050_01`, the separate instance labeled “sofa chair” (11)
+is elsewhere in the room, outside the released crop, and is deliberately not
+used. Both chosen objects are entirely retained in the original pruned meshes.
+
+Each sofa's `reference-targets.json` records exact object bounds, vertex ranges,
+axis alignment, input hashes and selection rationale. The full meshes match the
+public mirror's ScanNet mesh SHA-256 hashes exactly. Reproduce/verify with
+`node scripts/build-sofa-reference-targets.cjs <annotation-directory> --check`;
+the directory must contain both scenes' `.aggregation.json`,
+`_vh_clean_2.0.010000.segs.json` and `.txt` files. Omit `--check` to emit an
+`apply_patch` patch. The check verifies that every annotated target vertex is
+present in the released pruned mesh within 0.1 mm; it does not alter either mesh.
 
 Full PLYs, TV-query and other-room outputs originate from
 [`leduckhai/PruneGround`](https://github.com/leduckhai/PruneGround/tree/main/examples).
